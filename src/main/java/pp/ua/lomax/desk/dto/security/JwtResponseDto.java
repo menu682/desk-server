@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class JwtResponseDTO {
+public class JwtResponseDto {
 
     private String token;
     private String refreshToken;

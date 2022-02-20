@@ -1,13 +1,13 @@
 package pp.ua.lomax.desk.dto;
 
-public class MessageResponseDTO {
+public class MessageResponseDto {
 
     private String message;
 
-    public MessageResponseDTO() {
+    public MessageResponseDto() {
     }
 
-    public MessageResponseDTO(String message) {
+    public MessageResponseDto(String message) {
         this.message = message;
     }
 

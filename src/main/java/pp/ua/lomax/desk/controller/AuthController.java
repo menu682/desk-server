@@ -6,10 +6,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import pp.ua.lomax.desk.dto.security.JwtResponseDTO;
-import pp.ua.lomax.desk.dto.security.LoginRequestDTO;
-import pp.ua.lomax.desk.dto.MessageResponseDTO;
-import pp.ua.lomax.desk.dto.security.SignupRequestDTO;
+import pp.ua.lomax.desk.dto.security.JwtResponseDto;
+import pp.ua.lomax.desk.dto.security.LoginRequestDto;
+import pp.ua.lomax.desk.dto.MessageResponseDto;
+import pp.ua.lomax.desk.dto.security.SignupRequestDto;
 import pp.ua.lomax.desk.service.security.AuthService;
 
 import javax.validation.Valid;
@@ -27,12 +27,12 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public JwtResponseDTO login(@Valid @RequestBody LoginRequestDTO loginRequestDTO){
+    public JwtResponseDto login(@Valid @RequestBody LoginRequestDto loginRequestDTO){
         return authService.loginUser(loginRequestDTO);
     }
 
     @PostMapping("/register")
-    public MessageResponseDTO register(@Valid @RequestBody SignupRequestDTO signupRequestDTO){
+    public MessageResponseDto register(@Valid @RequestBody SignupRequestDto signupRequestDTO){
         return authService.registerUser(signupRequestDTO);
     }
 

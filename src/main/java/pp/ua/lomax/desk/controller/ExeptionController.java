@@ -6,7 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import pp.ua.lomax.desk.dto.MessageResponseDTO;
+import pp.ua.lomax.desk.dto.MessageResponseDto;
 
 /*
 Класс отключает генерацию html по умолчанию при возникновении исключений
@@ -28,6 +28,6 @@ public class ExeptionController extends ResponseEntityExceptionHandler {
                                                              HttpStatus status,
                                                              WebRequest request) {
         return new ResponseEntity<>((body != null ? body
-                : new MessageResponseDTO(ex.getMessage())), headers, status);
+                : new MessageResponseDto(ex.getMessage())), headers, status);
     }
 }

@@ -6,10 +6,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pp.ua.lomax.desk.dto.security.JwtResponseDTO;
-import pp.ua.lomax.desk.dto.security.LoginRequestDTO;
-import pp.ua.lomax.desk.dto.MessageResponseDTO;
-import pp.ua.lomax.desk.dto.security.SignupRequestDTO;
+import pp.ua.lomax.desk.dto.security.JwtResponseDto;
+import pp.ua.lomax.desk.dto.security.LoginRequestDto;
+import pp.ua.lomax.desk.dto.MessageResponseDto;
+import pp.ua.lomax.desk.dto.security.SignupRequestDto;
 import pp.ua.lomax.desk.config.security.UserDetailsImpl;
 import pp.ua.lomax.desk.config.security.jwt.JwtUtils;
 import pp.ua.lomax.desk.persistance.ERole;
@@ -44,7 +44,7 @@ public class AuthService {
         this.jwtUtils = jwtUtils;
     }
 
-    public JwtResponseDTO loginUser(LoginRequestDTO loginRequestDTO) {
+    public JwtResponseDto loginUser(LoginRequestDto loginRequestDTO) {
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequestDTO.getUsername(),
@@ -59,7 +59,7 @@ public class AuthService {
                 .map(item -> item.getAuthority())
                 .toList();
 
-        return new JwtResponseDTO(
+        return new JwtResponseDto(
                 jwt,
                 refreshJwt,
                 userDetails.getId(),
@@ -70,7 +70,7 @@ public class AuthService {
     }
 
 
-    public MessageResponseDTO registerUser(SignupRequestDTO signupRequestDTO) {
+    public MessageResponseDto registerUser(SignupRequestDto signupRequestDTO) {
 
         if(signupRequestDTO.getUsername().isEmpty()
                 || signupRequestDTO.getPassword().isEmpty()
@@ -99,7 +99,7 @@ public class AuthService {
         userEntity.setStatus(EStatus.ACTIVE);
         userEntity.setRoles(roles);
         userRepository.save(userEntity);
-        return new MessageResponseDTO("Пользователь успешно зарегистрирован!");
+        return new MessageResponseDto("Пользователь успешно зарегистрирован!");
 
     }
 

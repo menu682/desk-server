@@ -30,16 +30,19 @@ public class JwtUtils {
     private static final Logger logger = LoggerFactory.getLogger(JwtUtils.class);
 
     private String jwtSecret;
-    private int jwtExpirationMs;
+    private long jwtExpirationMs;
+    private long jwtRefreshExpirationMs;
     private String jwtIssuser;
     private Key key;
     private JwtParser JWT_PARSER;
 
     public JwtUtils(@Value("${app.jwtSecret}") String jwtSecret,
-                    @Value("${app.jwtExpirationMs}") int jwtExpirationMs,
+                    @Value("${app.jwtExpirationMs}") long jwtExpirationMs,
+                    @Value("${app.jwtRefreshExpirationMs}") long jwtRefreshExpirationMs,
                     @Value("${app.jwtIssuser}") String jwtIssuser) {
         this.jwtSecret = jwtSecret;
         this.jwtExpirationMs = jwtExpirationMs;
+        this.jwtRefreshExpirationMs = jwtRefreshExpirationMs;
         this.jwtIssuser = jwtIssuser;
         this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
         this.JWT_PARSER = Jwts.parserBuilder()
@@ -78,13 +81,40 @@ public class JwtUtils {
                 .compact();
     }
 
+    public String generateJwtRefreshToken(Authentication authentication) {
+
+        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("userid", userPrincipal.getId());
+        data.put("username", userPrincipal.getUsername());
+
+        return Jwts.builder()
+                .setIssuer(jwtIssuser)
+                .setIssuedAt(
+                        Date.from(
+                                LocalDateTime.now()
+                                        .atZone(ZoneOffset.systemDefault())
+                                        .toInstant()
+                        )
+                )
+                .setExpiration(
+                        Date.from(
+                                LocalDateTime.now()
+                                        .plus(jwtRefreshExpirationMs, ChronoUnit.MILLIS)
+                                        .atZone(ZoneOffset.systemDefault())
+                                        .toInstant()
+                        )
+                )
+                .addClaims(data)
+                .signWith(key)
+                .compact();
+    }
+
     public String getUserNameFromJwtToken(String token) {
         return  (String) JWT_PARSER.parseClaimsJws(token).getBody().get("username");
     }
 
-    public Long getUserIdFromJwtToken(String token) {
-        return  Long.valueOf(String.valueOf(JWT_PARSER.parseClaimsJws(token).getBody().get("userid")));
-    }
 
     public boolean validateJwtToken(String authToken) {
         try {

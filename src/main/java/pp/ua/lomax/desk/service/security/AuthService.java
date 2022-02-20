@@ -13,6 +13,7 @@ import pp.ua.lomax.desk.dto.security.SignupRequestDTO;
 import pp.ua.lomax.desk.config.security.UserDetailsImpl;
 import pp.ua.lomax.desk.config.security.jwt.JwtUtils;
 import pp.ua.lomax.desk.persistance.ERole;
+import pp.ua.lomax.desk.persistance.EStatus;
 import pp.ua.lomax.desk.persistance.entity.security.RoleEntity;
 import pp.ua.lomax.desk.persistance.entity.security.UserEntity;
 import pp.ua.lomax.desk.persistance.repository.security.RoleRepository;
@@ -21,7 +22,6 @@ import pp.ua.lomax.desk.persistance.repository.security.UserRepository;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class AuthService {
@@ -52,14 +52,16 @@ public class AuthService {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtUtils.generateJwtToken(authentication);
+        String refreshJwt = jwtUtils.generateJwtRefreshToken(authentication);
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
                 .map(item -> item.getAuthority())
-                .collect(Collectors.toList());
+                .toList();
 
         return new JwtResponseDTO(
                 jwt,
+                refreshJwt,
                 userDetails.getId(),
                 userDetails.getUsername(),
                 userDetails.getEmail(),
@@ -91,8 +93,11 @@ public class AuthService {
         Set<RoleEntity> roles = new HashSet<>();
         RoleEntity userRole = roleRepository.findByName(ERole.ROLE_USER)
                                 .orElseThrow(() -> new RuntimeException("Такой роли нет"));
-                        roles.add(userRole);
 
+        roles.add(userRole);
+
+        userEntity.setStatus(EStatus.ACTIVE);
+        userEntity.setRoles(roles);
         userRepository.save(userEntity);
         return new MessageResponseDTO("Пользователь успешно зарегистрирован!");
 

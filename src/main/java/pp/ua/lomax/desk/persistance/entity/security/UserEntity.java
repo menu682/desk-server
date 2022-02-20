@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pp.ua.lomax.desk.persistance.ERole;
+import pp.ua.lomax.desk.persistance.EStatus;
 import pp.ua.lomax.desk.persistance.entity.BaseEntity;
 
 import javax.persistence.Column;
@@ -39,7 +40,8 @@ public class UserEntity extends BaseEntity {
     private String password;
 
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private EStatus status;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(	name = "user_roles",

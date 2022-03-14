@@ -8,6 +8,7 @@ import pp.ua.lomax.desk.persistance.entity.security.UserEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
@@ -20,11 +21,9 @@ import javax.persistence.Table;
 public class PostEntity extends BaseEntity{
 
 
-    @Column(name = "category", nullable = false)
     @ManyToOne
     private CategoryEntity category;
 
-    @Column(name = "user", nullable = false)
     @ManyToOne
     private UserEntity user;
 

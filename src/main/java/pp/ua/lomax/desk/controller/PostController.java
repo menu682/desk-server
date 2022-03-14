@@ -1,7 +1,5 @@
 package pp.ua.lomax.desk.controller;
 
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,13 +19,10 @@ import pp.ua.lomax.desk.service.PostServise;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController()
-@RequestMapping("/post")
+@RequestMapping("/api/post")
 public class PostController {
 
     private PostServise postServise;
-
-    public PostController() {
-    }
 
     public PostController(PostServise postServise) {
         this.postServise = postServise;

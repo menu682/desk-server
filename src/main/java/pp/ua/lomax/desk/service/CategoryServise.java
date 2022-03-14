@@ -8,11 +8,12 @@ import pp.ua.lomax.desk.persistance.repository.CategoryRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryServise {
 
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
     public CategoryServise(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
@@ -22,19 +23,29 @@ public class CategoryServise {
 
         List<CategoryEntity> categoryEntityList = categoryRepository.findAll();
 
-        return categoryEntityList.stream().map(categoryEntity -> {
+        return categoryEntityList.stream().map(this::convertCategoryEntityToDto).toList();
 
-            CategoryResponseDto categoryResponseDto = new CategoryResponseDto();
+    }
 
-            categoryResponseDto.setId(categoryEntity.getId());
-            categoryResponseDto.setCreated(categoryEntity.getCreated());
-            categoryResponseDto.setUpdated(categoryEntity.getUpdated());
-            categoryResponseDto.setName(categoryEntity.getName());
-            categoryResponseDto.setParent(categoryEntity.getParent());
+    public CategoryResponseDto getCategoryById(Long categoryId){
 
-            return categoryResponseDto;
-        }).toList();
+        CategoryEntity categoryEntity = categoryRepository.findCategoryEntityById(categoryId)
+                .orElseThrow(() ->
+                    new RuntimeException("Такой категории нет!"));
 
+        return convertCategoryEntityToDto(categoryEntity);
+    }
+
+    private CategoryResponseDto convertCategoryEntityToDto(CategoryEntity categoryEntity) {
+
+        CategoryResponseDto categoryResponseDto = new CategoryResponseDto();
+        categoryResponseDto.setId(categoryEntity.getId());
+        categoryResponseDto.setCreated(categoryEntity.getCreated());
+        categoryResponseDto.setUpdated(categoryEntity.getUpdated());
+        categoryResponseDto.setName(categoryEntity.getName());
+        categoryResponseDto.setParent(categoryEntity.getParent());
+
+        return categoryResponseDto;
     }
 
 }

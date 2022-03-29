@@ -18,7 +18,7 @@ import pp.ua.lomax.desk.config.security.jwt.AuthTokenFilter;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(
-        // securedEnabled = true,
+        securedEnabled = true,
         // jsr250Enabled = true,
         prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{

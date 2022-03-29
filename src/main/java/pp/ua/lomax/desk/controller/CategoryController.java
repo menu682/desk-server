@@ -1,10 +1,19 @@
 package pp.ua.lomax.desk.controller;
 
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import pp.ua.lomax.desk.dto.MessageResponseDto;
+import pp.ua.lomax.desk.dto.category.CategoryAddDto;
+import pp.ua.lomax.desk.dto.category.CategoryDeleteDto;
+import pp.ua.lomax.desk.dto.category.CategoryPutDto;
 import pp.ua.lomax.desk.dto.category.CategoryResponseDto;
 import pp.ua.lomax.desk.service.CategoryServise;
 
@@ -31,6 +40,22 @@ public class CategoryController {
         return categoryServise.getCategoryById(categoryId);
     }
 
-    //TODO Сделать для категорий создание изменение удаление
+    @Secured("ROLE_ADMIN")
+    @PostMapping("/")
+    public CategoryResponseDto addCategory(@RequestBody CategoryAddDto categoryAddDto){
+        return categoryServise.addCategory(categoryAddDto);
+    }
+
+    @Secured("ROLE_ADMIN")
+    @PutMapping("/")
+    public MessageResponseDto putCategory(@RequestBody CategoryPutDto categoryPutDto){
+        return null;
+    }
+
+    @Secured("ROLE_ADMIN")
+    @DeleteMapping("/")
+    public MessageResponseDto deleteCategory(@RequestBody CategoryDeleteDto categoryDeleteDto){
+        return null;
+    }
 
 }

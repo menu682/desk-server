@@ -48,14 +48,14 @@ public class CategoryController {
 
     @Secured("ROLE_ADMIN")
     @PutMapping("/")
-    public MessageResponseDto putCategory(@RequestBody CategoryPutDto categoryPutDto){
-        return null;
+    public CategoryResponseDto putCategory(@RequestBody CategoryPutDto categoryPutDto){
+        return categoryServise.putCategory(categoryPutDto);
     }
 
     @Secured("ROLE_ADMIN")
     @DeleteMapping("/")
     public MessageResponseDto deleteCategory(@RequestBody CategoryDeleteDto categoryDeleteDto){
-        return null;
+        return categoryServise.deleteCategory(categoryDeleteDto);
     }
 
 }

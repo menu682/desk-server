@@ -1,5 +1,6 @@
 package pp.ua.lomax.desk.controller;
 
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,35 +23,35 @@ import pp.ua.lomax.desk.service.PostServise;
 @RequestMapping("/api/post")
 public class PostController {
 
-    private PostServise postServise;
+    private final PostServise postServise;
 
     public PostController(PostServise postServise) {
         this.postServise = postServise;
     }
 
+    //TODO Create services for controllers
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping
-    public MessageResponseDto createPost(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
-                                         @RequestBody CreatePostRequestDto createPostRequestDto){
-        return postServise.create(userDetailsImpl.getUser(), createPostRequestDto);
+    public PostResponseDto createPost(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+                                      @RequestBody CreatePostRequestDto createPostRequestDto){
+        return null;//postServise.create(userDetailsImpl.getUser(), createPostRequestDto);
     }
-
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping
-    public MessageResponseDto putPost(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
+    public PostResponseDto putPost(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
                                          @RequestBody CreatePostRequestDto createPostRequestDto){
         return null;
     }
-
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @DeleteMapping
     public MessageResponseDto deletePost(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
                                          @RequestBody DeletePostRequestDto deletePostRequestDto){
         return null;
     }
-
     @GetMapping
     public PostResponseDto getPostsList(){
         return null;
     }
-
     @GetMapping("/{postId}")
     public PostResponseDto getPost(@PathVariable Long postId){
         return null;

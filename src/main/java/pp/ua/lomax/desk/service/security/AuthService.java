@@ -75,15 +75,15 @@ public class AuthService {
         if(signupRequestDTO.getUsername().isEmpty()
                 || signupRequestDTO.getPassword().isEmpty()
                 || signupRequestDTO.getEmail().isEmpty()){
-            throw new RuntimeException("Поля не должны быть пустыми");
+            throw new RuntimeException("Fields must not be empty");
         }
 
         if (userRepository.existsByUsername(signupRequestDTO.getUsername())) {
-            throw new RuntimeException("Такое имя уже занято, попробуйте другое.");
+            throw new RuntimeException("This name is already taken, please try another one.");
         }
 
         if (userRepository.existsByEmail(signupRequestDTO.getEmail())) {
-            throw new RuntimeException("Такой email уже занят, попробуйте другой.");
+            throw new RuntimeException("This email is already taken, please try another one.");
         }
 
         UserEntity userEntity = new UserEntity();
@@ -92,14 +92,14 @@ public class AuthService {
         userEntity.setPassword(encoder.encode(signupRequestDTO.getPassword()));
         Set<RoleEntity> roles = new HashSet<>();
         RoleEntity userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("Такой роли нет"));
+                                .orElseThrow(() -> new RuntimeException("No such role"));
 
         roles.add(userRole);
 
         userEntity.setStatus(EStatus.ACTIVE);
         userEntity.setRoles(roles);
         userRepository.save(userEntity);
-        return new MessageResponseDto("Пользователь успешно зарегистрирован!");
+        return new MessageResponseDto("User registered successfully!");
 
     }
 

@@ -32,20 +32,20 @@ public class PostController {
     //TODO Create services for controllers
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping
-    public PostResponseDto createPost(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
-                                      @RequestBody CreatePostRequestDto createPostRequestDto){
+    public PostResponseDto createPost(@RequestBody CreatePostRequestDto createPostRequestDto,
+                                      @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
         return null;//postServise.create(userDetailsImpl.getUser(), createPostRequestDto);
     }
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping
-    public PostResponseDto putPost(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
-                                         @RequestBody CreatePostRequestDto createPostRequestDto){
+    public PostResponseDto putPost(@RequestBody CreatePostRequestDto createPostRequestDto,
+                                   @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
         return null;
     }
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @DeleteMapping
-    public MessageResponseDto deletePost(@AuthenticationPrincipal UserDetailsImpl userDetailsImpl,
-                                         @RequestBody DeletePostRequestDto deletePostRequestDto){
+    public MessageResponseDto deletePost(@RequestBody DeletePostRequestDto deletePostRequestDto,
+                                         @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
         return null;
     }
     @GetMapping

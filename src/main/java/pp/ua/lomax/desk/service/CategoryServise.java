@@ -2,12 +2,14 @@ package pp.ua.lomax.desk.service;
 
 
 import org.springframework.stereotype.Service;
+import pp.ua.lomax.desk.config.security.UserDetailsImpl;
 import pp.ua.lomax.desk.dto.MessageResponseDto;
 import pp.ua.lomax.desk.dto.category.CategoryAddDto;
 import pp.ua.lomax.desk.dto.category.CategoryDeleteDto;
 import pp.ua.lomax.desk.dto.category.CategoryPutDto;
 import pp.ua.lomax.desk.dto.category.CategoryResponseDto;
-import pp.ua.lomax.desk.exeptions.NoFindRuntimeExeption;
+import pp.ua.lomax.desk.exeptions.EMessage;
+import pp.ua.lomax.desk.exeptions.MessageRuntimeException;
 import pp.ua.lomax.desk.persistance.entity.CategoryEntity;
 import pp.ua.lomax.desk.persistance.repository.CategoryRepository;
 
@@ -37,7 +39,7 @@ public class CategoryServise {
         return categoryResponseDto;
     }
 
-    public List<CategoryResponseDto> getAllCategories(){
+    public List<CategoryResponseDto> getAllCategories() {
 
         List<CategoryEntity> categoryEntityList = categoryRepository.findAll();
 
@@ -45,23 +47,24 @@ public class CategoryServise {
 
     }
 
-    public CategoryResponseDto getCategoryById(Long categoryId){
+    public CategoryResponseDto getCategoryById(Long categoryId) {
 
         CategoryEntity categoryEntity = categoryRepository.findCategoryEntityById(categoryId)
                 .orElseThrow(() ->
-                    new RuntimeException("Error: no such category"));
+                        new MessageRuntimeException(EMessage.CATEGORY_NO_SUCH.getMessage()));
 
         return convertCategoryEntityToDto(categoryEntity);
     }
 
-    public CategoryResponseDto addCategory(CategoryAddDto categoryAddDto){
-
+    public CategoryResponseDto addCategory(CategoryAddDto categoryAddDto,
+                                           UserDetailsImpl userDetailsImpl) {
+//TODO ADD LOG
         Optional<CategoryEntity> findCategoryEntity =
                 categoryRepository.findCategoryEntityByNameAndParent(
-                categoryAddDto.getName(), categoryAddDto.getParent());
+                        categoryAddDto.getName(), categoryAddDto.getParent());
 
-        if(findCategoryEntity.isPresent()){
-            throw new NoFindRuntimeExeption("Error: this category already exists");
+        if (findCategoryEntity.isPresent()) {
+            throw new MessageRuntimeException(EMessage.CATEGORY_ALREADY_EXISTS.getMessage());
         }
 
         CategoryEntity categoryEntity = new CategoryEntity();
@@ -73,11 +76,13 @@ public class CategoryServise {
         return convertCategoryEntityToDto(savedCategoryEntity);
     }
 
-    public CategoryResponseDto putCategory(CategoryPutDto categoryPutDto){
-
-        CategoryEntity categoryEntity = categoryRepository.findCategoryEntityById(categoryPutDto.getId())
-                .orElseThrow(() ->
-                        new RuntimeException("Error: no such category"));
+    public CategoryResponseDto putCategory(CategoryPutDto categoryPutDto,
+                                           UserDetailsImpl userDetailsImpl) {
+//TODO ADD LOG
+        CategoryEntity categoryEntity =
+                categoryRepository.findCategoryEntityById(categoryPutDto.getId())
+                        .orElseThrow(() ->
+                                new MessageRuntimeException(EMessage.CATEGORY_NO_SUCH.getMessage()));
 
         categoryEntity.setName(categoryPutDto.getName());
         categoryEntity.setParent(categoryEntity.getParent());
@@ -87,11 +92,20 @@ public class CategoryServise {
         return convertCategoryEntityToDto(savedCategoryEntity);
     }
 
-    public MessageResponseDto deleteCategory(CategoryDeleteDto categoryDeleteDto){
+    public MessageResponseDto deleteCategory(CategoryDeleteDto categoryDeleteDto,
+                                             UserDetailsImpl userDetailsImpl) {
+//TODO ADD LOG
+        List<Optional<CategoryEntity>> parentCategoryEntity =
+                categoryRepository.findCategoryEntityByParent(categoryDeleteDto.getId());
 
-        CategoryEntity categoryEntity = categoryRepository.findCategoryEntityById(categoryDeleteDto.getId())
-                .orElseThrow(() ->
-                        new RuntimeException("Error: no such category"));
+        if (!parentCategoryEntity.isEmpty()) {
+            throw new MessageRuntimeException(EMessage.CATEGORY_IS_PARENT.getMessage());
+        }
+
+        CategoryEntity categoryEntity =
+                categoryRepository.findCategoryEntityById(categoryDeleteDto.getId())
+                        .orElseThrow(() ->
+                                new RuntimeException(EMessage.CATEGORY_NO_SUCH.getMessage()));
 
         categoryRepository.delete(categoryEntity);
         return new MessageResponseDto("Category deleted");

@@ -6,12 +6,15 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import pp.ua.lomax.desk.dto.EResponseMessage;
 import pp.ua.lomax.desk.dto.security.JwtResponseDto;
 import pp.ua.lomax.desk.dto.security.LoginRequestDto;
 import pp.ua.lomax.desk.dto.MessageResponseDto;
 import pp.ua.lomax.desk.dto.security.SignupRequestDto;
 import pp.ua.lomax.desk.config.security.UserDetailsImpl;
 import pp.ua.lomax.desk.config.security.jwt.JwtUtils;
+import pp.ua.lomax.desk.exeptions.EExceptionMessage;
+import pp.ua.lomax.desk.exeptions.MessageRuntimeException;
 import pp.ua.lomax.desk.persistance.ERole;
 import pp.ua.lomax.desk.persistance.EStatus;
 import pp.ua.lomax.desk.persistance.entity.security.RoleEntity;
@@ -72,18 +75,18 @@ public class AuthService {
 
     public MessageResponseDto registerUser(SignupRequestDto signupRequestDTO) {
         //TODO Refactor exeption
-        if(signupRequestDTO.getUsername().isEmpty()
+        if (signupRequestDTO.getUsername().isEmpty()
                 || signupRequestDTO.getPassword().isEmpty()
-                || signupRequestDTO.getEmail().isEmpty()){
-            throw new RuntimeException("Fields must not be empty");
+                || signupRequestDTO.getEmail().isEmpty()) {
+            throw new MessageRuntimeException(EExceptionMessage.FIELDS_MUST_NOT_BE_EMPTY.getMessage());
         }
 
         if (userRepository.existsByUsername(signupRequestDTO.getUsername())) {
-            throw new RuntimeException("This name is already taken, please try another one.");
+            throw new MessageRuntimeException(EExceptionMessage.NAME_IS_ALREADY_TAKEN.getMessage());
         }
 
         if (userRepository.existsByEmail(signupRequestDTO.getEmail())) {
-            throw new RuntimeException("This email is already taken, please try another one.");
+            throw new MessageRuntimeException(EExceptionMessage.EMAIL_IS_ALREADY_TAKEN.getMessage());
         }
 
         UserEntity userEntity = new UserEntity();
@@ -92,14 +95,14 @@ public class AuthService {
         userEntity.setPassword(encoder.encode(signupRequestDTO.getPassword()));
         Set<RoleEntity> roles = new HashSet<>();
         RoleEntity userRole = roleRepository.findByName(ERole.ROLE_USER)
-                                .orElseThrow(() -> new RuntimeException("No such role"));
+                .orElseThrow(() -> new MessageRuntimeException(EExceptionMessage.NO_SUCH_ROLE.getMessage()));
 
         roles.add(userRole);
 
         userEntity.setStatus(EStatus.ACTIVE);
         userEntity.setRoles(roles);
         userRepository.save(userEntity);
-        return new MessageResponseDto("User registered successfully!");
+        return new MessageResponseDto(EResponseMessage.REGISTER_SUCCESSFULLY.getMessage());
 
     }
 

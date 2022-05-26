@@ -4,6 +4,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import pp.ua.lomax.desk.exeptions.EExceptionMessage;
 import pp.ua.lomax.desk.persistance.entity.security.UserEntity;
 import pp.ua.lomax.desk.persistance.repository.security.UserRepository;
 
@@ -21,7 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         UserEntity user = userRepository.findByUsername(username)
                 .orElseThrow(() ->
-                        new UsernameNotFoundException("User Not Found with username: " + username));
+                        new UsernameNotFoundException(EExceptionMessage.USER_NOT_FOUND.getMessage() + username));
 
         return UserDetailsImpl.build(user);
     }

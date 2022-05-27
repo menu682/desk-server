@@ -73,6 +73,7 @@ public class CategoryServise {
         CategoryEntity categoryEntity = new CategoryEntity();
         categoryEntity.setName(categoryAddDto.getName());
         categoryEntity.setParent(categoryAddDto.getParent());
+        categoryEntity.setUser(userDetailsImpl.getUser());
 
         CategoryEntity savedCategoryEntity = categoryRepository.save(categoryEntity);
 
@@ -91,6 +92,7 @@ public class CategoryServise {
 
         categoryEntity.setName(categoryPutDto.getName());
         categoryEntity.setParent(categoryEntity.getParent());
+        categoryEntity.setUser(userDetailsImpl.getUser());
 
         CategoryEntity savedCategoryEntity = categoryRepository.save(categoryEntity);
 
@@ -101,7 +103,7 @@ public class CategoryServise {
 
     public MessageResponseDto deleteCategory(CategoryDeleteDto categoryDeleteDto,
                                              UserDetailsImpl userDetailsImpl) {
-
+//TODO проверка на наличие постов перед удалением
         List<Optional<CategoryEntity>> parentCategoryEntity =
                 categoryRepository.findCategoryEntityByParent(categoryDeleteDto.getId());
 

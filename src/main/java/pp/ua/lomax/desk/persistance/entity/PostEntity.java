@@ -8,9 +8,14 @@ import pp.ua.lomax.desk.persistance.entity.security.UserEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "post")
@@ -36,10 +41,9 @@ public class PostEntity extends BaseEntity{
     @Column(name = "ad", nullable = false)
     private String ad;
 
-//    @Column(name = "foto")
-//    @OneToMany(fetch = FetchType.EAGER)
-//    @JoinTable(	name = "photo", joinColumns = @JoinColumn(name = "id"))
-//    Set<PhotoEntity> photos = new HashSet<>();
+    @Column(name = "foto")
+    @OneToMany(fetch = FetchType.EAGER)
+    Set<PhotoEntity> photo = new HashSet<>();
 
 
 }

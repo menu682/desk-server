@@ -3,7 +3,7 @@ package pp.ua.lomax.desk.dto.post;
 import lombok.Data;
 
 @Data
-public class DeletePostRequestDto {
+public class PostDeleteDto {
 
     private Long postId;
 

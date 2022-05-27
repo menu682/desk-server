@@ -13,8 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pp.ua.lomax.desk.config.security.UserDetailsImpl;
 import pp.ua.lomax.desk.dto.MessageResponseDto;
-import pp.ua.lomax.desk.dto.post.CreatePostRequestDto;
-import pp.ua.lomax.desk.dto.post.DeletePostRequestDto;
+import pp.ua.lomax.desk.dto.post.PostCreateDto;
+import pp.ua.lomax.desk.dto.post.PostDeleteDto;
+import pp.ua.lomax.desk.dto.post.PostPutDto;
 import pp.ua.lomax.desk.dto.post.PostResponseDto;
 import pp.ua.lomax.desk.service.PostServise;
 
@@ -32,19 +33,21 @@ public class PostController {
     //TODO Create services for controllers
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping
-    public PostResponseDto createPost(@RequestBody CreatePostRequestDto createPostRequestDto,
+    public PostResponseDto createPost(@RequestBody PostCreateDto postCreateDto,
                                       @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
-        return null;//postServise.create(userDetailsImpl.getUser(), createPostRequestDto);
+        return postServise.createPost(postCreateDto, userDetailsImpl);
     }
+
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping
-    public PostResponseDto putPost(@RequestBody CreatePostRequestDto createPostRequestDto,
+    public PostResponseDto putPost(@RequestBody PostPutDto postPutDto,
                                    @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
-        return null;
+        return postServise.putPost(postPutDto, userDetailsImpl);
     }
+
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @DeleteMapping
-    public MessageResponseDto deletePost(@RequestBody DeletePostRequestDto deletePostRequestDto,
+    public MessageResponseDto deletePost(@RequestBody PostDeleteDto postDeleteDto,
                                          @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
         return null;
     }
@@ -54,7 +57,7 @@ public class PostController {
     }
     @GetMapping("/{postId}")
     public PostResponseDto getPost(@PathVariable Long postId){
-        return null;
+        return postServise.getPostById(postId);
     }
 
 }

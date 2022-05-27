@@ -4,9 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pp.ua.lomax.desk.persistance.entity.security.UserEntity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -23,4 +26,6 @@ public class CategoryEntity extends BaseEntity{
     @Column(name = "parent")
     private Long parent;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    private UserEntity user;
 }

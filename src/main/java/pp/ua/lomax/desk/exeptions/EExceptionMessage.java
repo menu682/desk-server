@@ -12,7 +12,8 @@ public enum EExceptionMessage {
     FIELDS_MUST_NOT_BE_EMPTY("Fields must not be empty"),
     NAME_IS_ALREADY_TAKEN("This name is already taken, please try another one."),
     EMAIL_IS_ALREADY_TAKEN("This email is already taken, please try another one."),
-    NO_SUCH_ROLE("No such role");
+    NO_SUCH_ROLE("No such role"),
+    POST_NOT_FOUND("Post not found");
 
 
     private String message;

@@ -13,7 +13,8 @@ public enum EExceptionMessage {
     NAME_IS_ALREADY_TAKEN("This name is already taken, please try another one."),
     EMAIL_IS_ALREADY_TAKEN("This email is already taken, please try another one."),
     NO_SUCH_ROLE("No such role"),
-    POST_NOT_FOUND("Post not found");
+    POST_NOT_FOUND("Post not found"),
+    POST_PUT_ACCESS_IS_DENIED("Access denied, only the user who created the ad can change it!");
 
 
     private String message;

@@ -16,7 +16,7 @@ import pp.ua.lomax.desk.config.security.jwt.JwtUtils;
 import pp.ua.lomax.desk.exeptions.EExceptionMessage;
 import pp.ua.lomax.desk.exeptions.MessageRuntimeException;
 import pp.ua.lomax.desk.persistance.ERole;
-import pp.ua.lomax.desk.persistance.EStatus;
+import pp.ua.lomax.desk.persistance.EUserStatus;
 import pp.ua.lomax.desk.persistance.entity.security.RoleEntity;
 import pp.ua.lomax.desk.persistance.entity.security.UserEntity;
 import pp.ua.lomax.desk.persistance.repository.security.RoleRepository;
@@ -99,7 +99,7 @@ public class AuthService {
 
         roles.add(userRole);
 
-        userEntity.setStatus(EStatus.ACTIVE);
+        userEntity.setStatus(EUserStatus.ACTIVE);
         userEntity.setRoles(roles);
         userRepository.save(userEntity);
         return new MessageResponseDto(EResponseMessage.REGISTER_SUCCESSFULLY.getMessage());

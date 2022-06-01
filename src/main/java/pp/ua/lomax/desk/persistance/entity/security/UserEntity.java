@@ -1,12 +1,12 @@
 package pp.ua.lomax.desk.persistance.entity.security;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pp.ua.lomax.desk.persistance.ERole;
-import pp.ua.lomax.desk.persistance.EStatus;
+import pp.ua.lomax.desk.persistance.EUserStatus;
 import pp.ua.lomax.desk.persistance.entity.BaseEntity;
 
 import javax.persistence.Column;
@@ -37,11 +37,12 @@ public class UserEntity extends BaseEntity {
     private String email;
 
     @Column(name = "password", nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private EStatus status;
+    private EUserStatus status;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(	name = "user_roles",

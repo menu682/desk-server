@@ -5,7 +5,6 @@ import lombok.Data;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import java.net.URL;
 
 @Entity
 @Table(name = "photo")

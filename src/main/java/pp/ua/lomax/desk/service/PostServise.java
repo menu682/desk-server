@@ -3,7 +3,6 @@ package pp.ua.lomax.desk.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
-import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pp.ua.lomax.desk.config.security.UserDetailsImpl;
@@ -17,16 +16,19 @@ import pp.ua.lomax.desk.persistance.entity.PhotoEntity;
 import pp.ua.lomax.desk.persistance.entity.PostEntity;
 import pp.ua.lomax.desk.persistance.entity.security.UserEntity;
 import pp.ua.lomax.desk.persistance.repository.CategoryRepository;
+import pp.ua.lomax.desk.persistance.repository.EPostStatus;
 import pp.ua.lomax.desk.persistance.repository.PhotoRepository;
 import pp.ua.lomax.desk.persistance.repository.PostRepository;
 
+import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.nio.file.Path;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Set;
@@ -40,20 +42,20 @@ public class PostServise {
     private CategoryRepository categoryRepository;
     private PhotoRepository photoRepository;
 
-    private String uploadPath;
+    private String uploadPhotoPath;
     private String serverHost;
     private String serverPort;
 
     public PostServise(PostRepository postRepository,
                        CategoryRepository categoryRepository,
                        PhotoRepository photoRepository,
-                       @Value("${app.uploadPath}") String uploadPath,
+                       @Value("${app.uploadPhotoPath}") String uploadPhotoPath,
                        @Value("${app.host}") String serverHost,
                        @Value("${server.port}") String serverPort) {
         this.postRepository = postRepository;
         this.categoryRepository = categoryRepository;
         this.photoRepository = photoRepository;
-        this.uploadPath = uploadPath;
+        this.uploadPhotoPath = uploadPhotoPath;
         this.serverHost = serverHost;
         this.serverPort = serverPort;
     }
@@ -68,6 +70,7 @@ public class PostServise {
         postResponseDto.setName(postEntity.getName());
         postResponseDto.setDescription(postEntity.getDescription());
         postResponseDto.setAd(postEntity.getAd());
+        postResponseDto.setStatus(postEntity.getStatus());
         postResponseDto.setCategory(postEntity.getCategory());
         postResponseDto.setUser(postEntity.getUser());
         postResponseDto.setPhoto(postEntity.getPhoto());
@@ -103,6 +106,7 @@ public class PostServise {
         postEntity.setName(postCreateDto.getName());
         postEntity.setDescription(postCreateDto.getDescription());
         postEntity.setAd(postCreateDto.getAd());
+        postEntity.setStatus(EPostStatus.MODERATE);
         postEntity.setCategory(categoryEntity);
         postEntity.setUser(user);
 
@@ -157,31 +161,12 @@ public class PostServise {
 
         CategoryEntity categoryEntity = getCategoryEntityById(postPutDto.getCategory());
 
-        String uploadFileName = uploadFile.getOriginalFilename();
+        String uploadFileLink = createUploadFileLink(uploadFile, userDetailsImpl, categoryEntity);
 
-        StringBuffer fileName = new StringBuffer();
-        fileName.append(String.valueOf(userDetailsImpl.getId()));
-        fileName.append("_");
-        fileName.append(String.valueOf(categoryEntity.getId()));
-        fileName.append("_");
-        fileName.append(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
-        fileName.append(".");
-        fileName.append(uploadFileName.substring(uploadFileName.lastIndexOf(".")));
-
-        File photo = new File(uploadPath + fileName.toString());
-
-        FileOutputStream fileOutputStream = null;
-        try {
-            fileOutputStream = new FileOutputStream(photo);
-            fileOutputStream.write(uploadFile.getBytes());
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        saveFile(uploadPhotoPath, uploadFileLink, uploadFile);
 
         PhotoEntity photoEntity = new PhotoEntity();
-        photoEntity.setLink(serverHost + ":" + serverPort + "/photo/" + photo.getName());
+        photoEntity.setLink(uploadFileLink);
         photoRepository.save(photoEntity);
 
         Set<PhotoEntity> photoEntityList = postEntity.getPhoto();
@@ -190,6 +175,67 @@ public class PostServise {
         postRepository.save(postEntity);
 
         return convertPostEntityToDto(postEntity);
+    }
+
+    private String createUploadFileLink(MultipartFile multipartFile,
+                                        UserDetailsImpl userDetailsImpl,
+                                        CategoryEntity categoryEntity){
+
+        String uploadFileName = multipartFile.getOriginalFilename();
+        
+        String fileSufix = uploadFileName.substring(uploadFileName.lastIndexOf(".") + 1);
+
+        if(fileSufix.equals("jpg")){
+            fileSufix = "jpeg";
+        } else if (!fileSufix.equals("png") && !fileSufix.equals("gif") && !fileSufix.equals("bmp")) {
+            throw new MessageRuntimeException(EExceptionMessage.UNSUPORTED_FILE_FORMAT.getMessage());
+        }
+
+        StringBuilder fileLink = new StringBuilder();
+        fileLink.append(serverHost);
+        fileLink.append(":");
+        fileLink.append(serverPort);
+        fileLink.append("/api/post/getphoto/");
+        fileLink.append(String.valueOf(userDetailsImpl.getId()));
+        fileLink.append("_");
+        fileLink.append(String.valueOf(categoryEntity.getId()));
+        fileLink.append("_");
+        fileLink.append(LocalDateTime.now().toEpochSecond(ZoneOffset.UTC));
+        fileLink.append(".");
+        fileLink.append(fileSufix);
+
+        return fileLink.toString();
+
+    }
+
+    private void saveFile(String uploadPhotoPath,
+                          String fileLink,
+                          MultipartFile uploadFile){
+
+        String fileName = fileLink.substring(fileLink.lastIndexOf("/") + 1);
+
+        File photo = new File(uploadPhotoPath + fileName);
+
+        try (FileOutputStream fileOutputStream = new FileOutputStream(photo)) {
+            fileOutputStream.write(uploadFile.getBytes());
+        } catch (FileNotFoundException e) {
+            throw new MessageRuntimeException(EExceptionMessage.FILE_NOT_FOUND.getMessage());
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public BufferedImage downloadPhoto(String fileName){
+
+        File file = new File(uploadPhotoPath + fileName);
+
+        try (FileInputStream fis = new FileInputStream(file)){
+            BufferedImage bufferedImage = ImageIO.read(fis);
+            return bufferedImage;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 }

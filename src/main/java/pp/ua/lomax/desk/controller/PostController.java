@@ -1,6 +1,8 @@
 package pp.ua.lomax.desk.controller;
 
+import org.apache.tomcat.util.http.fileupload.ByteArrayOutputStream;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -23,9 +25,14 @@ import pp.ua.lomax.desk.dto.post.PostPutDto;
 import pp.ua.lomax.desk.dto.post.PostResponseDto;
 import pp.ua.lomax.desk.service.PostServise;
 
+import javax.imageio.ImageIO;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController()
@@ -73,11 +80,29 @@ public class PostController {
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping (value = "/upload",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public PostResponseDto uploadPhoto(@RequestPart("post") @Valid PostPutDto postPutDto,
-                                       @RequestParam("file") @Valid @NotNull @NotBlank MultipartFile file,
-                                       @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
+    public PostResponseDto uploadPostPhoto(@RequestPart("post") @Valid PostPutDto postPutDto,
+                                           @RequestParam("file") @Valid @NotNull @NotBlank MultipartFile file,
+                                           @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
 
         return postServise.uploadPhoto(postPutDto, file, userDetailsImpl);
+    }
+
+    @GetMapping("/getphoto/{fileName}")
+    public ResponseEntity getPhoto(@PathVariable String fileName){
+
+        BufferedImage bufferedImage = postServise.downloadPhoto(fileName);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {
+            ImageIO.write(bufferedImage, "png", baos);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(baos.toByteArray());
     }
 
 }

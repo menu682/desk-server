@@ -1,6 +1,6 @@
 package pp.ua.lomax.desk.persistance;
 
-public enum EStatus {
+public enum EUserStatus {
     ACTIVE,
     SUSPEND,
     DELETE

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import pp.ua.lomax.desk.persistance.entity.security.UserEntity;
+import pp.ua.lomax.desk.persistance.repository.EPostStatus;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -40,6 +41,9 @@ public class PostEntity extends BaseEntity{
 
     @Column(name = "ad", nullable = false)
     private String ad;
+
+    @Column(name = "status")
+    private EPostStatus status;
 
     @Column(name = "foto")
     @OneToMany(fetch = FetchType.EAGER)

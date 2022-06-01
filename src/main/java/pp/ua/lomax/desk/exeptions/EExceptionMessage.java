@@ -14,7 +14,9 @@ public enum EExceptionMessage {
     EMAIL_IS_ALREADY_TAKEN("This email is already taken, please try another one."),
     NO_SUCH_ROLE("No such role"),
     POST_NOT_FOUND("Post not found"),
-    POST_PUT_ACCESS_IS_DENIED("Access denied, only the user who created the ad can change it!");
+    POST_PUT_ACCESS_IS_DENIED("Access denied, only the user who created the ad can change it!"),
+    UNSUPORTED_FILE_FORMAT("Unsupported file format"),
+    FILE_NOT_FOUND("File not found");
 
 
     private String message;

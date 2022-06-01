@@ -4,6 +4,7 @@ import lombok.Data;
 import pp.ua.lomax.desk.persistance.entity.CategoryEntity;
 import pp.ua.lomax.desk.persistance.entity.PhotoEntity;
 import pp.ua.lomax.desk.persistance.entity.security.UserEntity;
+import pp.ua.lomax.desk.persistance.repository.EPostStatus;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -19,6 +20,7 @@ public class PostResponseDto {
     private String ad;
     private CategoryEntity category;
     private UserEntity user;
+    private EPostStatus status;
     private Set<PhotoEntity> photo;
 
 

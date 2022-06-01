@@ -41,7 +41,6 @@ public class PostServise {
     private PostRepository postRepository;
     private CategoryRepository categoryRepository;
     private PhotoRepository photoRepository;
-
     private String uploadPhotoPath;
     private String serverHost;
     private String serverPort;

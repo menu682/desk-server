@@ -16,7 +16,7 @@ public class PostPutDto {
     private String description;
     private String ad;
     private EPostStatus status;
-    @JsonInclude(JsonInclude.Include.NON_EMPTY)
-    private Set<PhotoEntity> photo;
+//    @JsonInclude(JsonInclude.Include.NON_EMPTY)
+//    private Set<PhotoEntity> photo;
 
 }

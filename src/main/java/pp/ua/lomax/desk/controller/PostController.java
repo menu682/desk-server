@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import pp.ua.lomax.desk.config.security.UserDetailsImpl;
 import pp.ua.lomax.desk.dto.MessageResponseDto;
+import pp.ua.lomax.desk.dto.post.PhotoDto;
 import pp.ua.lomax.desk.dto.post.PostCreateDto;
 import pp.ua.lomax.desk.dto.post.PostDeleteDto;
 import pp.ua.lomax.desk.dto.post.PostPutDto;
@@ -80,7 +81,7 @@ public class PostController {
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping (value = "/upload",
             consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
-    public PostResponseDto uploadPostPhoto(@RequestPart("post") @Valid PostPutDto postPutDto,
+    public PostResponseDto uploadPostPhoto(@RequestPart("post") @Valid @NotNull @NotBlank PostPutDto postPutDto,
                                            @RequestParam("file") @Valid @NotNull @NotBlank MultipartFile file,
                                            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
 
@@ -103,6 +104,16 @@ public class PostController {
                 .ok()
                 .contentType(MediaType.IMAGE_PNG)
                 .body(baos.toByteArray());
+    }
+
+    @Secured({"ROLE_USER", "ROLE_ADMIN"})
+    @PostMapping(value = "/removephoto",
+            consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
+    public PostResponseDto removePhoto(@RequestPart("post") @Valid @NotNull @NotBlank PostPutDto postPutDto,
+                                       @RequestPart("photo") @Valid @NotNull @NotBlank PhotoDto photoDto,
+                                       @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
+
+        return postServise.removePhoto(postPutDto, photoDto, userDetailsImpl);
     }
 
 }

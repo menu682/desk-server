@@ -313,7 +313,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJEZXNrU2VydmVyIiwiaWF0IjoxNjUzNzg4MjI0LCJleHAiOjE2NTM4NzQ2MjQsInVzZXJpZCI6MiwidXNlcm5hbWUiOiJhZG1pbiJ9.uTjDyV67mIMvWP1SVGZb9ODb1Twj8pemounfHYK1IQtWh3o1lmEg_x9Mt0uwZP2aYTfyX47sLDydeypdWdh-Yw",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJEZXNrU2VydmVyIiwiaWF0IjoxNjU0MDY2MDc0LCJleHAiOjE2NTQxNTI0NzQsInVzZXJpZCI6MiwidXNlcm5hbWUiOiJhZG1pbiJ9.xtG8A2SJMarCI1A8cFLGdkU3pRcfxmSlDUEk-hzDxb9c108HRKSYT8y5-_r3Xlm8X4DTQ63YjkAotrgmRY25TQ",
 									"type": "string"
 								}
 							]
@@ -325,12 +325,14 @@
 							"formdata": [
 								{
 									"key": "file",
+									"contentType": "",
 									"type": "file",
-									"src": "/C:/Users/Fenix/Pictures/tsepochka_matritsa_chisla_170292_1920x1080.jpg"
+									"src": "/C:/Users/Fenix/Pictures/Уголок.png"
 								},
 								{
 									"key": "post",
 									"value": "{\n    \"id\": 4,\n    \"category\" : 1,\n    \"name\" : \"Test post PUT id 4\",\n    \"description\" : \"test description\",\n    \"ad\" : \"test text ad\"\n}",
+									"contentType": "application/json",
 									"type": "text"
 								}
 							]
@@ -346,6 +348,67 @@
 								"api",
 								"post",
 								"upload",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get photo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/post/getphoto/2_1_1654083931.jpeg",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"post",
+								"getphoto",
+								"2_1_1654083931.jpeg"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove photo",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "post",
+									"value": "{\n    \"id\": 4,\n    \"category\" : 1,\n    \"name\" : \"Test post PUT id 4\",\n    \"description\" : \"test description\",\n    \"ad\" : \"test text ad\"\n}",
+									"contentType": "application/json",
+									"type": "text"
+								},
+								{
+									"key": "photo",
+									"value": "{\"id\": 12,\n    \"link\" : \"http://localhost:8080/api/post/getphoto/2_1_1654084617.png\"}",
+									"contentType": "application/json",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/post/removephoto/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"post",
+								"removephoto",
 								""
 							]
 						}

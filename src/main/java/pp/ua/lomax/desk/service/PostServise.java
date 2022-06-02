@@ -6,6 +6,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pp.ua.lomax.desk.config.security.UserDetailsImpl;
+import pp.ua.lomax.desk.dto.post.PhotoDto;
 import pp.ua.lomax.desk.dto.post.PostCreateDto;
 import pp.ua.lomax.desk.dto.post.PostPutDto;
 import pp.ua.lomax.desk.dto.post.PostResponseDto;
@@ -139,7 +140,7 @@ public class PostServise {
         postEntity.setName(postPutDto.getName());
         postEntity.setDescription(postPutDto.getDescription());
         postEntity.setAd(postPutDto.getAd());
-        postEntity.setPhoto(postPutDto.getPhoto());
+//        postEntity.setPhoto(postPutDto.getPhoto());
 
         postRepository.save(postEntity);
         log.info("Post put: ID: " + postEntity.getId() + "postName: " + postEntity.getName()
@@ -162,7 +163,7 @@ public class PostServise {
 
         String uploadFileLink = createUploadFileLink(uploadFile, userDetailsImpl, categoryEntity);
 
-        saveFile(uploadPhotoPath, uploadFileLink, uploadFile);
+        saveFile(uploadFileLink, uploadFile);
 
         PhotoEntity photoEntity = new PhotoEntity();
         photoEntity.setLink(uploadFileLink);
@@ -171,6 +172,48 @@ public class PostServise {
         Set<PhotoEntity> photoEntityList = postEntity.getPhoto();
         photoEntityList.add(photoEntity);
         postEntity.setPhoto(photoEntityList);
+        postRepository.save(postEntity);
+
+        return convertPostEntityToDto(postEntity);
+    }
+
+    public BufferedImage downloadPhoto(String fileName){
+
+        File file = new File(uploadPhotoPath + fileName);
+
+        try (FileInputStream fis = new FileInputStream(file)){
+            BufferedImage bufferedImage = ImageIO.read(fis);
+            return bufferedImage;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public PostResponseDto removePhoto(PostPutDto postPutDto,
+                                       PhotoDto photoDto,
+                                       UserDetailsImpl userDetailsImpl){
+
+        PostEntity postEntity = getPostEntityById(postPutDto.getId());
+
+        if(userDetailsImpl.getId() != postEntity.getUser().getId()){
+            throw new MessageRuntimeException(EExceptionMessage.POST_PUT_ACCESS_IS_DENIED.getMessage());
+        }
+
+        PhotoEntity photoEntity = photoRepository.getById(photoDto.getId());
+
+        postEntity.getPhoto().remove(photoEntity);
+
+        String fileLink = photoEntity.getLink();
+        String fileName = fileLink.substring(fileLink.lastIndexOf("/") + 1);
+        File photo = new File(uploadPhotoPath + fileName);
+
+        try{
+            photo.delete();
+        }catch (RuntimeException e){
+            new MessageRuntimeException(EExceptionMessage.FILE_NOT_FOUND.getMessage());
+        }
+
         postRepository.save(postEntity);
 
         return convertPostEntityToDto(postEntity);
@@ -207,8 +250,7 @@ public class PostServise {
 
     }
 
-    private void saveFile(String uploadPhotoPath,
-                          String fileLink,
+    private void saveFile(String fileLink,
                           MultipartFile uploadFile){
 
         String fileName = fileLink.substring(fileLink.lastIndexOf("/") + 1);
@@ -224,17 +266,7 @@ public class PostServise {
         }
     }
 
-    public BufferedImage downloadPhoto(String fileName){
+    private void removeFile(){}
 
-        File file = new File(uploadPhotoPath + fileName);
-
-        try (FileInputStream fis = new FileInputStream(file)){
-            BufferedImage bufferedImage = ImageIO.read(fis);
-            return bufferedImage;
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-
-    }
 
 }

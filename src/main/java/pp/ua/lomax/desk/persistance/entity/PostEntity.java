@@ -42,6 +42,9 @@ public class PostEntity extends BaseEntity{
     @Column(name = "ad", nullable = false)
     private String ad;
 
+    @Column(name = "price")
+    private Double price;
+
     @Column(name = "status")
     private EPostStatus status;
 

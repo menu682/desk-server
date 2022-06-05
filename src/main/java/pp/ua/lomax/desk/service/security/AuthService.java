@@ -92,6 +92,7 @@ public class AuthService {
         UserEntity userEntity = new UserEntity();
         userEntity.setUsername(signupRequestDTO.getUsername());
         userEntity.setEmail(signupRequestDTO.getEmail());
+        userEntity.setPhone(signupRequestDTO.getPhone());
         userEntity.setPassword(encoder.encode(signupRequestDTO.getPassword()));
         Set<RoleEntity> roles = new HashSet<>();
         RoleEntity userRole = roleRepository.findByName(ERole.ROLE_USER)
@@ -101,6 +102,7 @@ public class AuthService {
 
         userEntity.setStatus(EUserStatus.ACTIVE);
         userEntity.setRoles(roles);
+        //TODO здесь может быть ошибка если телефон или почта уже есть в базе - отловить
         userRepository.save(userEntity);
         return new MessageResponseDto(EResponseMessage.REGISTER_SUCCESSFULLY.getMessage());
 

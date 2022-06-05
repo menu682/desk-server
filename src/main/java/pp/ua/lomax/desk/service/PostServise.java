@@ -106,6 +106,7 @@ public class PostServise {
         postEntity.setName(postCreateDto.getName());
         postEntity.setDescription(postCreateDto.getDescription());
         postEntity.setAd(postCreateDto.getAd());
+        postEntity.setPrice(postCreateDto.getPrice());
         postEntity.setStatus(EPostStatus.MODERATE);
         postEntity.setCategory(categoryEntity);
         postEntity.setUser(user);
@@ -140,6 +141,7 @@ public class PostServise {
         postEntity.setName(postPutDto.getName());
         postEntity.setDescription(postPutDto.getDescription());
         postEntity.setAd(postPutDto.getAd());
+        postEntity.setPrice(postPutDto.getPrice());
 //        postEntity.setPhoto(postPutDto.getPhoto());
 
         postRepository.save(postEntity);
@@ -169,9 +171,8 @@ public class PostServise {
         photoEntity.setLink(uploadFileLink);
         photoRepository.save(photoEntity);
 
-        Set<PhotoEntity> photoEntityList = postEntity.getPhoto();
-        photoEntityList.add(photoEntity);
-        postEntity.setPhoto(photoEntityList);
+        postEntity.getPhoto().add(photoEntity);
+
         postRepository.save(postEntity);
 
         return convertPostEntityToDto(postEntity);
@@ -181,9 +182,11 @@ public class PostServise {
 
         File file = new File(uploadPhotoPath + fileName);
 
-        try (FileInputStream fis = new FileInputStream(file)){
+        try (FileInputStream fis = new FileInputStream(file)) {
             BufferedImage bufferedImage = ImageIO.read(fis);
             return bufferedImage;
+        } catch (FileNotFoundException e) {
+                throw new MessageRuntimeException(EExceptionMessage.FILE_NOT_FOUND.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -204,15 +207,7 @@ public class PostServise {
 
         postEntity.getPhoto().remove(photoEntity);
 
-        String fileLink = photoEntity.getLink();
-        String fileName = fileLink.substring(fileLink.lastIndexOf("/") + 1);
-        File photo = new File(uploadPhotoPath + fileName);
-
-        try{
-            photo.delete();
-        }catch (RuntimeException e){
-            new MessageRuntimeException(EExceptionMessage.FILE_NOT_FOUND.getMessage());
-        }
+        removeFile(photoEntity);
 
         postRepository.save(postEntity);
 
@@ -266,7 +261,17 @@ public class PostServise {
         }
     }
 
-    private void removeFile(){}
+    private void removeFile(PhotoEntity photoEntity){
+        String fileLink = photoEntity.getLink();
+        String fileName = fileLink.substring(fileLink.lastIndexOf("/") + 1);
+        File photo = new File(uploadPhotoPath + fileName);
+
+        try{
+            photo.delete();
+        }catch (RuntimeException e){
+            new MessageRuntimeException(EExceptionMessage.FILE_NOT_FOUND.getMessage());
+        }
+    }
 
 
 }

@@ -13,6 +13,7 @@ public class PostCreateDto {
     private String name;
     private String description;
     private String ad;
+    private Double price;
     @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private Set<PhotoEntity> photo;
 

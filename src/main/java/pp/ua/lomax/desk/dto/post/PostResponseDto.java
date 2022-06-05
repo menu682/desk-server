@@ -18,6 +18,7 @@ public class PostResponseDto {
     private String name;
     private String description;
     private String ad;
+    private Double price;
     private CategoryEntity category;
     private UserEntity user;
     private EPostStatus status;

@@ -1,11 +1,7 @@
 package pp.ua.lomax.desk.dto.post;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
-import pp.ua.lomax.desk.persistance.entity.PhotoEntity;
 import pp.ua.lomax.desk.persistance.repository.EPostStatus;
-
-import java.util.Set;
 
 @Data
 public class PostPutDto {

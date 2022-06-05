@@ -2,7 +2,6 @@ package pp.ua.lomax.desk.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pp.ua.lomax.desk.config.security.UserDetailsImpl;
@@ -29,10 +28,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.Set;
 
 @Service
 @Transactional

@@ -22,6 +22,7 @@ import pp.ua.lomax.desk.dto.MessageResponseDto;
 import pp.ua.lomax.desk.dto.post.PhotoDto;
 import pp.ua.lomax.desk.dto.post.PostCreateDto;
 import pp.ua.lomax.desk.dto.post.PostDeleteDto;
+import pp.ua.lomax.desk.dto.post.PostPaginationDto;
 import pp.ua.lomax.desk.dto.post.PostPutDto;
 import pp.ua.lomax.desk.dto.post.PostResponseDto;
 import pp.ua.lomax.desk.service.PostServise;
@@ -31,8 +32,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -67,10 +66,13 @@ public class PostController {
                                          @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
         return null;
     }
-    //??????? pagination
-    @GetMapping
-    public PostResponseDto getPostsList(){
-        return null;
+
+    @GetMapping("/{categoryId}/{page}/{size}")
+    public PostPaginationDto getPostsList(@PathVariable Long categoryId,
+                                          @PathVariable Integer page,
+                                          @PathVariable Integer size){
+
+        return postServise.getPostsPagination(categoryId, page, size);
     }
 
     @GetMapping("/{postId}")

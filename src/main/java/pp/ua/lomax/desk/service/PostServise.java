@@ -2,11 +2,17 @@ package pp.ua.lomax.desk.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pp.ua.lomax.desk.config.security.UserDetailsImpl;
+import pp.ua.lomax.desk.dto.EResponseMessage;
 import pp.ua.lomax.desk.dto.post.PhotoDto;
 import pp.ua.lomax.desk.dto.post.PostCreateDto;
+import pp.ua.lomax.desk.dto.post.PostPaginationDto;
 import pp.ua.lomax.desk.dto.post.PostPutDto;
 import pp.ua.lomax.desk.dto.post.PostResponseDto;
 import pp.ua.lomax.desk.exeptions.EExceptionMessage;
@@ -30,6 +36,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 @Transactional
@@ -75,13 +83,45 @@ public class PostServise {
         return postResponseDto;
     }
 
-    private PostEntity getPostEntityById(Long id){
+    public PostPaginationDto getPostsPagination(Long categoryId,
+                                                Integer pageNumber,
+                                                Integer size) {
+
+        CategoryEntity categoryEntity = categoryRepository.findCategoryEntityById(categoryId)
+                .orElseThrow(() ->
+                        new MessageRuntimeException(EExceptionMessage.CATEGORY_NO_SUCH.getMessage()));
+//TODO add any sorted methods
+        Pageable paging = PageRequest.of(pageNumber - 1, size, Sort.by("created").descending());
+
+        Page<PostEntity> pageResult = postRepository.findByStatusAndCategory(EPostStatus.ACTIVE,
+                                                                                categoryEntity, paging);
+
+        if (pageResult.getContent().isEmpty()) {
+            throw new MessageRuntimeException(EResponseMessage.CATEGORY_IS_EMPTY.getMessage());
+        }
+
+        Set<PostResponseDto> postResponseDtoSet = new HashSet<>();
+        pageResult.getContent().forEach(postEntity -> {
+            PostResponseDto postResponseDto = convertPostEntityToDto(postEntity);
+            postResponseDtoSet.add(postResponseDto);
+        });
+
+        PostPaginationDto postPaginationDto = new PostPaginationDto();
+        postPaginationDto.setTotalElements(pageResult.getTotalElements());
+        postPaginationDto.setTotalPages(pageResult.getTotalPages());
+        postPaginationDto.setCurrentPage(pageNumber);
+        postPaginationDto.setPostResponseDtoSet(postResponseDtoSet);
+
+        return postPaginationDto;
+    }
+
+    private PostEntity getPostEntityById(Long id) {
         return postRepository.findPostEntitiesById(id)
                 .orElseThrow(() ->
                         new MessageRuntimeException(EExceptionMessage.POST_NOT_FOUND.getMessage()));
     }
 
-    private CategoryEntity getCategoryEntityById(Long id){
+    private CategoryEntity getCategoryEntityById(Long id) {
         return categoryRepository.findCategoryEntityById(id)
                 .orElseThrow(() ->
                         new MessageRuntimeException(EExceptionMessage.CATEGORY_NO_SUCH.getMessage()));
@@ -128,7 +168,7 @@ public class PostServise {
 
         PostEntity postEntity = getPostEntityById(postPutDto.getId());
 
-        if(userDetailsImpl.getId() != postEntity.getUser().getId()){
+        if (userDetailsImpl.getId() != postEntity.getUser().getId()) {
             throw new MessageRuntimeException(EExceptionMessage.POST_PUT_ACCESS_IS_DENIED.getMessage());
         }
 
@@ -149,12 +189,12 @@ public class PostServise {
     }
 
     public PostResponseDto uploadPhoto(PostPutDto postPutDto,
-                                      MultipartFile uploadFile,
-                                       UserDetailsImpl userDetailsImpl){
+                                       MultipartFile uploadFile,
+                                       UserDetailsImpl userDetailsImpl) {
 
         PostEntity postEntity = getPostEntityById(postPutDto.getId());
 
-        if(userDetailsImpl.getId() != postEntity.getUser().getId()){
+        if (userDetailsImpl.getId() != postEntity.getUser().getId()) {
             throw new MessageRuntimeException(EExceptionMessage.POST_PUT_ACCESS_IS_DENIED.getMessage());
         }
 
@@ -175,7 +215,7 @@ public class PostServise {
         return convertPostEntityToDto(postEntity);
     }
 
-    public BufferedImage downloadPhoto(String fileName){
+    public BufferedImage downloadPhoto(String fileName) {
 
         File file = new File(uploadPhotoPath + fileName);
 
@@ -183,7 +223,7 @@ public class PostServise {
             BufferedImage bufferedImage = ImageIO.read(fis);
             return bufferedImage;
         } catch (FileNotFoundException e) {
-                throw new MessageRuntimeException(EExceptionMessage.FILE_NOT_FOUND.getMessage());
+            throw new MessageRuntimeException(EExceptionMessage.FILE_NOT_FOUND.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -192,11 +232,11 @@ public class PostServise {
 
     public PostResponseDto removePhoto(PostPutDto postPutDto,
                                        PhotoDto photoDto,
-                                       UserDetailsImpl userDetailsImpl){
+                                       UserDetailsImpl userDetailsImpl) {
 
         PostEntity postEntity = getPostEntityById(postPutDto.getId());
 
-        if(userDetailsImpl.getId() != postEntity.getUser().getId()){
+        if (userDetailsImpl.getId() != postEntity.getUser().getId()) {
             throw new MessageRuntimeException(EExceptionMessage.POST_PUT_ACCESS_IS_DENIED.getMessage());
         }
 
@@ -213,13 +253,13 @@ public class PostServise {
 
     private String createUploadFileLink(MultipartFile multipartFile,
                                         UserDetailsImpl userDetailsImpl,
-                                        CategoryEntity categoryEntity){
+                                        CategoryEntity categoryEntity) {
 
         String uploadFileName = multipartFile.getOriginalFilename();
-        
+
         String fileSufix = uploadFileName.substring(uploadFileName.lastIndexOf(".") + 1);
 
-        if(fileSufix.equals("jpg")){
+        if (fileSufix.equals("jpg")) {
             fileSufix = "jpeg";
         } else if (!fileSufix.equals("png") && !fileSufix.equals("gif") && !fileSufix.equals("bmp")) {
             throw new MessageRuntimeException(EExceptionMessage.UNSUPORTED_FILE_FORMAT.getMessage());
@@ -243,7 +283,7 @@ public class PostServise {
     }
 
     private void saveFile(String fileLink,
-                          MultipartFile uploadFile){
+                          MultipartFile uploadFile) {
 
         String fileName = fileLink.substring(fileLink.lastIndexOf("/") + 1);
 
@@ -258,14 +298,14 @@ public class PostServise {
         }
     }
 
-    private void removeFile(PhotoEntity photoEntity){
+    private void removeFile(PhotoEntity photoEntity) {
         String fileLink = photoEntity.getLink();
         String fileName = fileLink.substring(fileLink.lastIndexOf("/") + 1);
         File photo = new File(uploadPhotoPath + fileName);
 
-        try{
+        try {
             photo.delete();
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             new MessageRuntimeException(EExceptionMessage.FILE_NOT_FOUND.getMessage());
         }
     }

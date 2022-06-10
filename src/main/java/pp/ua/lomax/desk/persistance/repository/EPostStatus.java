@@ -6,5 +6,8 @@ public enum EPostStatus {
     MODERATE,
     CLOSE,
     SUSPEND,
-    DELETE
+    DELETE;
+
+
+
 }

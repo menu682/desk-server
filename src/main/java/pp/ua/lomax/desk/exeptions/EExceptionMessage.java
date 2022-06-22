@@ -7,6 +7,7 @@ public enum EExceptionMessage {
     CATEGORY_NO_SUCH("Error: no such category"),
     CATEGORY_ALREADY_EXISTS("Error: this category already exists"),
     CATEGORY_IS_PARENT("Error: You cannot delete a category, it is a parent"),
+    CATEGORY_IS_NOT_EMPTY("Error: Category is not empty. Can not be deleted!"),
     UNAUTHORIZED("Error: Unauthorized"),
     USER_NOT_FOUND("User Not Found with username: "),
     FIELDS_MUST_NOT_BE_EMPTY("Fields must not be empty"),

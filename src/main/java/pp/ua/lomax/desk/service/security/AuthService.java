@@ -74,7 +74,7 @@ public class AuthService {
 
 
     public MessageResponseDto registerUser(SignupRequestDto signupRequestDTO) {
-        //TODO Refactor exeption
+
         if (signupRequestDTO.getUsername().isEmpty()
                 || signupRequestDTO.getPassword().isEmpty()
                 || signupRequestDTO.getEmail().isEmpty()) {

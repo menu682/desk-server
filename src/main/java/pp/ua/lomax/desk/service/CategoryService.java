@@ -13,7 +13,9 @@ import pp.ua.lomax.desk.dto.category.CategoryResponseDto;
 import pp.ua.lomax.desk.exeptions.EExceptionMessage;
 import pp.ua.lomax.desk.exeptions.MessageRuntimeException;
 import pp.ua.lomax.desk.persistance.entity.CategoryEntity;
+import pp.ua.lomax.desk.persistance.entity.PostEntity;
 import pp.ua.lomax.desk.persistance.repository.CategoryRepository;
+import pp.ua.lomax.desk.persistance.repository.PostRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -25,9 +27,12 @@ import java.util.Optional;
 public class CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final PostRepository postRepository;
 
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository,
+                           PostRepository postRepository) {
         this.categoryRepository = categoryRepository;
+        this.postRepository = postRepository;
     }
 
     private CategoryResponseDto convertCategoryEntityToDto(CategoryEntity categoryEntity) {
@@ -103,7 +108,7 @@ public class CategoryService {
 
     public MessageResponseDto deleteCategory(CategoryDeleteDto categoryDeleteDto,
                                              UserDetailsImpl userDetailsImpl) {
-//TODO проверка на наличие постов перед удалением
+
         List<Optional<CategoryEntity>> parentCategoryEntity =
                 categoryRepository.findCategoryEntityByParent(categoryDeleteDto.getId());
 
@@ -115,6 +120,12 @@ public class CategoryService {
                 categoryRepository.findCategoryEntityById(categoryDeleteDto.getId())
                         .orElseThrow(() ->
                                 new MessageRuntimeException(EExceptionMessage.CATEGORY_NO_SUCH.getMessage()));
+
+        List<Optional<PostEntity>> postEntityList = postRepository.findByCategory(categoryEntity);
+
+        if(!postEntityList.isEmpty()){
+            throw new MessageRuntimeException(EExceptionMessage.CATEGORY_IS_NOT_EMPTY.getMessage());
+        }
 
         categoryRepository.delete(categoryEntity);
 

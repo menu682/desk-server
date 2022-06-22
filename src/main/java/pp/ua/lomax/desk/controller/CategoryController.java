@@ -17,7 +17,7 @@ import pp.ua.lomax.desk.dto.category.CategoryAddDto;
 import pp.ua.lomax.desk.dto.category.CategoryDeleteDto;
 import pp.ua.lomax.desk.dto.category.CategoryPutDto;
 import pp.ua.lomax.desk.dto.category.CategoryResponseDto;
-import pp.ua.lomax.desk.service.CategoryServise;
+import pp.ua.lomax.desk.service.CategoryService;
 
 import java.util.List;
 
@@ -26,41 +26,41 @@ import java.util.List;
 @RequestMapping("/api/category")
 public class CategoryController {
 
-    private final CategoryServise categoryServise;
+    private final CategoryService categoryService;
 
-    public CategoryController(CategoryServise categoryServise) {
-        this.categoryServise = categoryServise;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
     @GetMapping
     public List<CategoryResponseDto> getAllCategories(){
-        return categoryServise.getAllCategories();
+        return categoryService.getAllCategories();
     }
 
     @GetMapping("/{categoryId}")
     public CategoryResponseDto getCategoryById(@PathVariable Long categoryId){
-        return categoryServise.getCategoryById(categoryId);
+        return categoryService.getCategoryById(categoryId);
     }
 
     @Secured("ROLE_ADMIN")
     @PostMapping("/")
     public CategoryResponseDto addCategory(@RequestBody CategoryAddDto categoryAddDto,
                                            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
-        return categoryServise.addCategory(categoryAddDto, userDetailsImpl);
+        return categoryService.addCategory(categoryAddDto, userDetailsImpl);
     }
 
     @Secured("ROLE_ADMIN")
     @PutMapping("/")
     public CategoryResponseDto putCategory(@RequestBody CategoryPutDto categoryPutDto,
                                             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
-        return categoryServise.putCategory(categoryPutDto, userDetailsImpl);
+        return categoryService.putCategory(categoryPutDto, userDetailsImpl);
     }
 
     @Secured("ROLE_ADMIN")
     @DeleteMapping("/")
     public MessageResponseDto deleteCategory(@RequestBody CategoryDeleteDto categoryDeleteDto,
                                              @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
-        return categoryServise.deleteCategory(categoryDeleteDto, userDetailsImpl);
+        return categoryService.deleteCategory(categoryDeleteDto, userDetailsImpl);
     }
 
 }

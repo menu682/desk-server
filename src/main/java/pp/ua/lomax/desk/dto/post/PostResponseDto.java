@@ -22,6 +22,7 @@ public class PostResponseDto {
     private CategoryEntity category;
     private UserEntity user;
     private EPostStatus status;
+    private LocalDateTime vipExpDate;
     private Set<PhotoEntity> photo;
 
 

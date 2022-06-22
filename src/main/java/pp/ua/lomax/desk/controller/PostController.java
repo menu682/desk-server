@@ -25,7 +25,7 @@ import pp.ua.lomax.desk.dto.post.PostDeleteDto;
 import pp.ua.lomax.desk.dto.post.PostPaginationDto;
 import pp.ua.lomax.desk.dto.post.PostPutDto;
 import pp.ua.lomax.desk.dto.post.PostResponseDto;
-import pp.ua.lomax.desk.service.PostServise;
+import pp.ua.lomax.desk.service.PostService;
 
 import javax.imageio.ImageIO;
 import javax.validation.Valid;
@@ -39,10 +39,10 @@ import java.io.IOException;
 @RequestMapping("/api/post")
 public class PostController {
 
-    private final PostServise postServise;
+    private final PostService postService;
 
-    public PostController(PostServise postServise) {
-        this.postServise = postServise;
+    public PostController(PostService postService) {
+        this.postService = postService;
     }
 
     //TODO Create services for controllers
@@ -50,14 +50,14 @@ public class PostController {
     @PostMapping
     public PostResponseDto createPost(@RequestBody PostCreateDto postCreateDto,
                                       @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
-        return postServise.createPost(postCreateDto, userDetailsImpl);
+        return postService.createPost(postCreateDto, userDetailsImpl);
     }
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PutMapping
     public PostResponseDto putPost(@RequestBody PostPutDto postPutDto,
                                    @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
-        return postServise.putPost(postPutDto, userDetailsImpl);
+        return postService.putPost(postPutDto, userDetailsImpl);
     }
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
@@ -72,12 +72,12 @@ public class PostController {
                                           @PathVariable Integer page,
                                           @PathVariable Integer size){
 
-        return postServise.getPostsPagination(categoryId, page, size);
+        return postService.getPostsPagination(categoryId, page, size);
     }
 
     @GetMapping("/{postId}")
     public PostResponseDto getPost(@PathVariable Long postId){
-        return postServise.getPostById(postId);
+        return postService.getPostById(postId);
     }
 
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
@@ -87,13 +87,13 @@ public class PostController {
                                            @RequestParam("file") @Valid @NotNull @NotBlank MultipartFile file,
                                            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
 
-        return postServise.uploadPhoto(postPutDto, file, userDetailsImpl);
+        return postService.uploadPhoto(postPutDto, file, userDetailsImpl);
     }
 
     @GetMapping("/getphoto/{fileName}")
     public ResponseEntity getPhoto(@PathVariable String fileName){
 
-        BufferedImage bufferedImage = postServise.downloadPhoto(fileName);
+        BufferedImage bufferedImage = postService.downloadPhoto(fileName);
 
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
@@ -115,7 +115,7 @@ public class PostController {
                                        @RequestPart("photo") @Valid @NotNull @NotBlank PhotoDto photoDto,
                                        @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
 
-        return postServise.removePhoto(postPutDto, photoDto, userDetailsImpl);
+        return postService.removePhoto(postPutDto, photoDto, userDetailsImpl);
     }
 
 }

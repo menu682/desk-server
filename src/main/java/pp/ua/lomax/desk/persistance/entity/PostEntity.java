@@ -13,6 +13,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,7 +24,6 @@ import java.util.Set;
 @Getter
 @Setter
 public class PostEntity extends BaseEntity{
-
 
     @ManyToOne
     private CategoryEntity category;
@@ -45,6 +45,9 @@ public class PostEntity extends BaseEntity{
 
     @Column(name = "status")
     private EPostStatus status;
+
+    @Column(name = "vip_exp_date")
+    private LocalDateTime vipExpDate;
 
     @Column(name = "foto")
     @OneToMany(fetch = FetchType.EAGER)

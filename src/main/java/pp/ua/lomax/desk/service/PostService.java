@@ -42,7 +42,7 @@ import java.util.Set;
 @Service
 @Transactional
 @Slf4j
-public class PostServise {
+public class PostService {
 
     private PostRepository postRepository;
     private CategoryRepository categoryRepository;
@@ -51,7 +51,7 @@ public class PostServise {
     private String serverHost;
     private String serverPort;
 
-    public PostServise(PostRepository postRepository,
+    public PostService(PostRepository postRepository,
                        CategoryRepository categoryRepository,
                        PhotoRepository photoRepository,
                        @Value("${app.uploadPhotoPath}") String uploadPhotoPath,
@@ -76,6 +76,7 @@ public class PostServise {
         postResponseDto.setDescription(postEntity.getDescription());
         postResponseDto.setAd(postEntity.getAd());
         postResponseDto.setStatus(postEntity.getStatus());
+        postResponseDto.setVipExpDate(postEntity.getVipExpDate());
         postResponseDto.setCategory(postEntity.getCategory());
         postResponseDto.setUser(postEntity.getUser());
         postResponseDto.setPhoto(postEntity.getPhoto());
@@ -126,8 +127,6 @@ public class PostServise {
                 .orElseThrow(() ->
                         new MessageRuntimeException(EExceptionMessage.CATEGORY_NO_SUCH.getMessage()));
     }
-
-    //TODO сделать получение постов с пагинецией
 
     public PostResponseDto createPost(PostCreateDto postCreateDto,
                                       UserDetailsImpl userDetailsImpl) {
@@ -257,6 +256,7 @@ public class PostServise {
 
         String uploadFileName = multipartFile.getOriginalFilename();
 
+        assert uploadFileName != null : EExceptionMessage.INVALID_FILE_NAME.getMessage();
         String fileSufix = uploadFileName.substring(uploadFileName.lastIndexOf(".") + 1);
 
         if (fileSufix.equals("jpg")) {

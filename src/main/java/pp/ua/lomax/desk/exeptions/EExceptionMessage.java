@@ -16,7 +16,8 @@ public enum EExceptionMessage {
     POST_NOT_FOUND("Post not found"),
     POST_PUT_ACCESS_IS_DENIED("Access denied, only the user who created the ad can change it!"),
     UNSUPORTED_FILE_FORMAT("Unsupported file format"),
-    FILE_NOT_FOUND("File not found");
+    FILE_NOT_FOUND("File not found"),
+    INVALID_FILE_NAME("Assert: File name invalid or empty!");
 
 
     private String message;

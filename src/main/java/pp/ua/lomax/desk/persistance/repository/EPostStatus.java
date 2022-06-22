@@ -4,6 +4,7 @@ public enum EPostStatus {
 
     ACTIVE,
     MODERATE,
+    VIP,
     CLOSE,
     SUSPEND,
     DELETE;

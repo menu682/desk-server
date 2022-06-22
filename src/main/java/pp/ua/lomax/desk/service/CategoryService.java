@@ -22,11 +22,11 @@ import java.util.Optional;
 @Service
 @Transactional
 @Slf4j
-public class CategoryServise {
+public class CategoryService {
 
     private final CategoryRepository categoryRepository;
 
-    public CategoryServise(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository) {
         this.categoryRepository = categoryRepository;
     }
 

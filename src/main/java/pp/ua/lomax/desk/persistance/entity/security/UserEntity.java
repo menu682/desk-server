@@ -47,6 +47,9 @@ public class UserEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private EUserStatus status;
 
+    @Column(name = "balance")
+    private Double balance;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(	name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

@@ -5,5 +5,5 @@ import pp.ua.lomax.desk.persistance.entity.ConfigEntity;
 
 public interface ConfigRepository extends JpaRepository<ConfigEntity, Long> {
 
-
+        ConfigEntity findConfigEntityByConfigStatus(EConfigStatus eConfigStatus);
 }

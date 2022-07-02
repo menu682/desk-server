@@ -2,7 +2,12 @@ package pp.ua.lomax.desk.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pp.ua.lomax.desk.dto.config.ConfigDto;
+import pp.ua.lomax.desk.exeptions.EExceptionMessage;
+import pp.ua.lomax.desk.exeptions.MessageRuntimeException;
+import pp.ua.lomax.desk.persistance.entity.ConfigEntity;
 import pp.ua.lomax.desk.persistance.repository.ConfigRepository;
+import pp.ua.lomax.desk.persistance.repository.EConfigStatus;
 
 import javax.transaction.Transactional;
 
@@ -24,21 +29,38 @@ public class ConfigService {
     * на CLOSE и создавать новую запись с ACTIVE
     */
 
-    //TODO создать внутренний метод getConfig для получения активной конфигурации
-    //TODO создать внутренний метод-обёртку saveConfig для смены статуса активной конфигурации на закрытую и создания новой активной записи
+    private ConfigEntity configDtoToEntity(ConfigDto configDto){
+        ConfigEntity configEntity = new ConfigEntity();
+        configEntity.setConfigStatus(configDto.getConfigStatus());
+        configEntity.setVipDayCost(configDto.getVipDayCost());
 
-    /*
-    * !!! конфигурация меняется и сохраняется вцелом, ОДИН КОНФИГ ДТО
-    *
-    * getConfig
-    * -> если в КОНФИГ ДТО данные отличаются от текущих
-    * -> меняем конфигурацию (устанавливаем новые значения)
-    * -> saveConfig
-    *
-    * по итогу получаем новую запись в таблице
-    * */
+        return configEntity;
+    }
 
-    //TODO создать метод для установки конфигурации
+    public ConfigEntity getConfig(){
+        return configRepository.findConfigEntityByConfigStatus(EConfigStatus.ACTIVE);
+    }
 
+    public ConfigDto saveConfig(ConfigDto configDto){
+
+        ConfigEntity oldConfigEntity = getConfig();
+
+        if(oldConfigEntity.getVipDayCost().equals(configDto.getVipDayCost())){
+            throw new MessageRuntimeException(EExceptionMessage.CONFIG_NOT_CHANGE.getMessage());
+        }
+
+        oldConfigEntity.setConfigStatus(EConfigStatus.CLOSE);
+
+        ConfigEntity newConfigEntity = configDtoToEntity(configDto);
+
+        configRepository.save(oldConfigEntity);
+        configRepository.save(newConfigEntity);
+
+        ConfigDto newConfigDto = new ConfigDto();
+        newConfigDto.setConfigStatus(newConfigEntity.getConfigStatus());
+        newConfigDto.setVipDayCost(newConfigEntity.getVipDayCost());
+
+        return newConfigDto;
+    }
 
 }

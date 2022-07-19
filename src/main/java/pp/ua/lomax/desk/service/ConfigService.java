@@ -56,6 +56,8 @@ public class ConfigService {
         configRepository.save(oldConfigEntity);
         configRepository.save(newConfigEntity);
 
+        log.info("Configuration update: new Vip Day Cost - " + newConfigEntity.getVipDayCost());
+
         ConfigDto newConfigDto = new ConfigDto();
         newConfigDto.setConfigStatus(newConfigEntity.getConfigStatus());
         newConfigDto.setVipDayCost(newConfigEntity.getVipDayCost());

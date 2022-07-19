@@ -6,6 +6,7 @@ import pp.ua.lomax.desk.persistance.EUserStatus;
 @Data
 public class UserResponseDto {
 
+    private Long id;
     private String username;
     private String email;
     private String phone;

@@ -45,7 +45,6 @@ public class PostController {
         this.postService = postService;
     }
 
-    //TODO Create services for controllers
     @Secured({"ROLE_USER", "ROLE_ADMIN"})
     @PostMapping
     public PostResponseDto createPost(@RequestBody PostCreateDto postCreateDto,

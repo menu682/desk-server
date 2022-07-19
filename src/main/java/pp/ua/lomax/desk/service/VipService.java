@@ -9,7 +9,6 @@ import pp.ua.lomax.desk.persistance.repository.PostRepository;
 import pp.ua.lomax.desk.persistance.repository.security.UserRepository;
 
 import javax.transaction.Transactional;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -37,8 +36,6 @@ public class VipService {
         return userResponseDto;
     }
 
-    //TODO сделать метод addBalance(Double balance, UserDetailsImpl user) для пополнения баланса юзера
-
     public UserResponseDto addBalance(Double balance, UserDetailsImpl userDetailsImpl){
 
         UserEntity user = userDetailsImpl.getUser();
@@ -51,9 +48,15 @@ public class VipService {
             currentBalance = user.getBalance();
         }
 
-        user.setBalance(currentBalance + balance);
+        currentBalance += balance;
+
+        user.setBalance(currentBalance);
 
         userRepository.save(user);
+
+        log.info("User id " + user.getId() + " "
+                + user.getUsername() + " add balance "
+                + balance + " Current balance " + currentBalance);
 
         return convertUserEntityToDto(user);
 

@@ -48,7 +48,7 @@ public class UserEntity extends BaseEntity {
     private EUserStatus status;
 
     @Column(name = "balance")
-    private Double balance;
+    private Double balance = 0d;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(	name = "user_roles",

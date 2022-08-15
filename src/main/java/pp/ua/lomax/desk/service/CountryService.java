@@ -91,7 +91,7 @@ public class CountryService {
         }
 
         CountryEntity saveCountryEntity = new CountryEntity();
-        saveCountryEntity.setName(saveCountryEntity.getName());
+        saveCountryEntity.setName(countryAddDto.getName());
         countryRepository.save(saveCountryEntity);
 
         CountryEntity newCountryEntity = findCountryByName(countryAddDto.getName());
@@ -103,6 +103,11 @@ public class CountryService {
     }
 
     public CountryResponseDto putCountry(CountryPutDto countryPutDto, UserDetailsImpl userDetailsImpl){
+
+        Optional<CountryEntity> checkCountryEntity = countryRepository.findCountryEntityByName(countryPutDto.getName());
+        if(checkCountryEntity.isPresent()){
+            throw new MessageRuntimeException(EExceptionMessage.COUNTRY_IS_EXISTS.getMessage());
+        }
 
         CountryEntity countryEntity = findCountryById(countryPutDto.getId());
 
@@ -116,12 +121,13 @@ public class CountryService {
 
     public MessageResponseDto deleteCountry(CountryDeleteDto countryDeleteDto, UserDetailsImpl userDetailsImpl){
 
-        Optional<List<RegionEntity>> regions = regionRepository.findRegionEntitiesByCountry(countryDeleteDto.getId());
-        if(regions.isPresent()){
+        CountryEntity countryEntity = findCountryById(countryDeleteDto.getId());
+
+        List<RegionEntity> regions = regionRepository.findRegionEntityByCountry(countryEntity);
+        if(!regions.isEmpty()){
             throw new MessageRuntimeException(EExceptionMessage.COUNTRY_CONTAINS_REGIONS.getMessage());
         }
 
-        CountryEntity countryEntity = findCountryById(countryDeleteDto.getId());
         countryRepository.delete(countryEntity);
 
         log.info("Delete country: " + countryEntity.getName() + "; user: " + userDetailsImpl.getUsername());

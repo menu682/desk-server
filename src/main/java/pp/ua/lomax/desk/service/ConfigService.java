@@ -16,7 +16,7 @@ import javax.transaction.Transactional;
 @Slf4j
 public class ConfigService {
 
-    private ConfigRepository configRepository;
+    private final ConfigRepository configRepository;
 
     public ConfigService(ConfigRepository configRepository) {
         this.configRepository = configRepository;

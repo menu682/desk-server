@@ -16,7 +16,7 @@ import pp.ua.lomax.desk.service.VipService;
 @RequestMapping("/api/vip")
 public class VipController {
 
-    private VipService vipService;
+    private final VipService vipService;
 
     public VipController(VipService vipService) {
         this.vipService = vipService;

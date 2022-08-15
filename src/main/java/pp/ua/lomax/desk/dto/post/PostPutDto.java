@@ -8,6 +8,7 @@ public class PostPutDto {
 
     private Long id;
     private Long category;
+    private Long region;
     private String name;
     private String description;
     private String ad;

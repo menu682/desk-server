@@ -20,11 +20,13 @@ import pp.ua.lomax.desk.exeptions.MessageRuntimeException;
 import pp.ua.lomax.desk.persistance.entity.CategoryEntity;
 import pp.ua.lomax.desk.persistance.entity.PhotoEntity;
 import pp.ua.lomax.desk.persistance.entity.PostEntity;
+import pp.ua.lomax.desk.persistance.entity.RegionEntity;
 import pp.ua.lomax.desk.persistance.entity.security.UserEntity;
 import pp.ua.lomax.desk.persistance.repository.CategoryRepository;
 import pp.ua.lomax.desk.persistance.repository.EPostStatus;
 import pp.ua.lomax.desk.persistance.repository.PhotoRepository;
 import pp.ua.lomax.desk.persistance.repository.PostRepository;
+import pp.ua.lomax.desk.persistance.repository.RegionRepository;
 
 import javax.imageio.ImageIO;
 import javax.transaction.Transactional;
@@ -44,21 +46,24 @@ import java.util.Set;
 @Slf4j
 public class PostService {
 
-    private PostRepository postRepository;
-    private CategoryRepository categoryRepository;
-    private PhotoRepository photoRepository;
-    private String uploadPhotoPath;
-    private String serverHost;
-    private String serverPort;
+    private final PostRepository postRepository;
+    private final CategoryRepository categoryRepository;
+    private final RegionRepository regionRepository;
+    private final PhotoRepository photoRepository;
+    private final String uploadPhotoPath;
+    private final String serverHost;
+    private final String serverPort;
 
     public PostService(PostRepository postRepository,
                        CategoryRepository categoryRepository,
+                       RegionRepository regionRepository,
                        PhotoRepository photoRepository,
                        @Value("${app.uploadPhotoPath}") String uploadPhotoPath,
                        @Value("${app.host}") String serverHost,
                        @Value("${server.port}") String serverPort) {
         this.postRepository = postRepository;
         this.categoryRepository = categoryRepository;
+        this.regionRepository = regionRepository;
         this.photoRepository = photoRepository;
         this.uploadPhotoPath = uploadPhotoPath;
         this.serverHost = serverHost;
@@ -78,19 +83,42 @@ public class PostService {
         postResponseDto.setStatus(postEntity.getStatus());
         postResponseDto.setVipExpDate(postEntity.getVipExpDate());
         postResponseDto.setCategory(postEntity.getCategory());
+        postResponseDto.setRegion(postEntity.getRegion());
         postResponseDto.setUser(postEntity.getUser());
         postResponseDto.setPhoto(postEntity.getPhoto());
 
         return postResponseDto;
     }
 
+    private PostEntity getPostEntityById(Long id) {
+        return postRepository.findPostEntitiesById(id)
+                .orElseThrow(() ->
+                        new MessageRuntimeException(EExceptionMessage.POST_NOT_FOUND.getMessage()));
+    }
+
+    private CategoryEntity getCategoryEntityById(Long id) {
+        if (id == null){
+            throw new MessageRuntimeException(EExceptionMessage.CATEGORY_CAN_NOT_BE_NULL.getMessage());
+        }
+        return categoryRepository.findCategoryEntityById(id)
+                .orElseThrow(() ->
+                        new MessageRuntimeException(EExceptionMessage.CATEGORY_NO_SUCH.getMessage()));
+    }
+
+    private RegionEntity getRegionEntityById(Long id){
+        if(id == null){
+            throw new MessageRuntimeException(EExceptionMessage.REGION_CAN_NOT_BE_NULL.getMessage());
+        }
+        return regionRepository.findRegionById(id)
+                .orElseThrow(() ->
+                        new MessageRuntimeException(EExceptionMessage.REGION_NOT_FOUND.getMessage()));
+    }
+
     public PostPaginationDto getPostsPagination(Long categoryId,
                                                 Integer pageNumber,
                                                 Integer size) {
 
-        CategoryEntity categoryEntity = categoryRepository.findCategoryEntityById(categoryId)
-                .orElseThrow(() ->
-                        new MessageRuntimeException(EExceptionMessage.CATEGORY_NO_SUCH.getMessage()));
+        CategoryEntity categoryEntity = getCategoryEntityById(categoryId);
 //TODO add any sorted methods
         Pageable paging = PageRequest.of(pageNumber - 1, size, Sort.by("created").descending());
 
@@ -116,25 +144,13 @@ public class PostService {
         return postPaginationDto;
     }
 
-    private PostEntity getPostEntityById(Long id) {
-        return postRepository.findPostEntitiesById(id)
-                .orElseThrow(() ->
-                        new MessageRuntimeException(EExceptionMessage.POST_NOT_FOUND.getMessage()));
-    }
-
-    private CategoryEntity getCategoryEntityById(Long id) {
-        return categoryRepository.findCategoryEntityById(id)
-                .orElseThrow(() ->
-                        new MessageRuntimeException(EExceptionMessage.CATEGORY_NO_SUCH.getMessage()));
-    }
-
     public PostResponseDto createPost(PostCreateDto postCreateDto,
                                       UserDetailsImpl userDetailsImpl) {
 
-        CategoryEntity categoryEntity =
-                categoryRepository.findCategoryEntityById(postCreateDto.getCategory())
-                        .orElseThrow(() ->
-                                new MessageRuntimeException(EExceptionMessage.CATEGORY_NO_SUCH.getMessage()));
+
+        CategoryEntity categoryEntity = getCategoryEntityById(postCreateDto.getCategory());
+
+        RegionEntity regionEntity = getRegionEntityById(postCreateDto.getRegion());
 
         UserEntity user = userDetailsImpl.getUser();
 
@@ -145,6 +161,7 @@ public class PostService {
         postEntity.setPrice(postCreateDto.getPrice());
         postEntity.setStatus(EPostStatus.MODERATE);
         postEntity.setCategory(categoryEntity);
+        postEntity.setRegion(regionEntity);
         postEntity.setUser(user);
 
         postRepository.save(postEntity);
@@ -172,8 +189,10 @@ public class PostService {
         }
 
         CategoryEntity categoryEntity = getCategoryEntityById(postPutDto.getCategory());
+        RegionEntity regionEntity = getRegionEntityById(postPutDto.getRegion());
 
         postEntity.setCategory(categoryEntity);
+        postEntity.setRegion(regionEntity);
         postEntity.setName(postPutDto.getName());
         postEntity.setDescription(postPutDto.getDescription());
         postEntity.setAd(postPutDto.getAd());

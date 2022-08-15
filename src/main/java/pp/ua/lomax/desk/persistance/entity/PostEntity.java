@@ -29,6 +29,9 @@ public class PostEntity extends BaseEntity{
     private CategoryEntity category;
 
     @ManyToOne
+    private RegionEntity region;
+
+    @ManyToOne
     private UserEntity user;
 
     @Column(name = "name", nullable = false)

@@ -10,6 +10,7 @@ import java.util.Set;
 public class PostCreateDto {
 
     private Long category;
+    private Long region;
     private String name;
     private String description;
     private String ad;

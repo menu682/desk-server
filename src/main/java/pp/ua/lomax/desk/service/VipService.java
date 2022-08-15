@@ -40,15 +40,7 @@ public class VipService {
 
         UserEntity user = userDetailsImpl.getUser();
 
-        Double currentBalance;
-
-        if(user.getBalance() == null){
-            currentBalance = 0d;
-        } else {
-            currentBalance = user.getBalance();
-        }
-
-        currentBalance += balance;
+        Double currentBalance = (user.getBalance() == null ? 0d : user.getBalance()) + balance;
 
         user.setBalance(currentBalance);
 

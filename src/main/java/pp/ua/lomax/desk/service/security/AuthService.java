@@ -3,6 +3,7 @@ package pp.ua.lomax.desk.service.security;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,11 +30,11 @@ import java.util.Set;
 @Service
 public class AuthService {
 
-    private AuthenticationManager authenticationManager;
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
-    private PasswordEncoder encoder;
-    private JwtUtils jwtUtils;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder encoder;
+    private final JwtUtils jwtUtils;
 
     public AuthService(AuthenticationManager authenticationManager,
                        UserRepository userRepository,
@@ -59,7 +60,7 @@ public class AuthService {
 
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
         List<String> roles = userDetails.getAuthorities().stream()
-                .map(item -> item.getAuthority())
+                .map(GrantedAuthority::getAuthority)
                 .toList();
 
         return new JwtResponseDto(
@@ -81,11 +82,11 @@ public class AuthService {
             throw new MessageRuntimeException(EExceptionMessage.FIELDS_MUST_NOT_BE_EMPTY.getMessage());
         }
 
-        if (userRepository.existsByUsername(signupRequestDTO.getUsername())) {
+        if (Boolean.TRUE.equals(userRepository.existsByUsername(signupRequestDTO.getUsername()))) {
             throw new MessageRuntimeException(EExceptionMessage.NAME_IS_ALREADY_TAKEN.getMessage());
         }
 
-        if (userRepository.existsByEmail(signupRequestDTO.getEmail())) {
+        if (Boolean.TRUE.equals(userRepository.existsByEmail(signupRequestDTO.getEmail()))) {
             throw new MessageRuntimeException(EExceptionMessage.EMAIL_IS_ALREADY_TAKEN.getMessage());
         }
 

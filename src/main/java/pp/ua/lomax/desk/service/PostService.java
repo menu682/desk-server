@@ -114,9 +114,12 @@ public class PostService {
                         new MessageRuntimeException(EExceptionMessage.REGION_NOT_FOUND.getMessage()));
     }
 
-    public PostPaginationDto getPostsPagination(Long categoryId,
-                                                Integer pageNumber,
-                                                Integer size) {
+    //TODO getPostsPaginationByCountry
+    //TODO getPostsPaginationByRegion
+
+    public PostPaginationDto getPostsPaginationByCategory(Long categoryId,
+                                                          Integer pageNumber,
+                                                          Integer size) {
 
         CategoryEntity categoryEntity = getCategoryEntityById(categoryId);
 //TODO add any sorted methods

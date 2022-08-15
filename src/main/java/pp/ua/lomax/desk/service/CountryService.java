@@ -45,7 +45,7 @@ public class CountryService {
         return countryResponseDto;
     }
 
-    private CountryEntity findCountryByName(String name){
+    public CountryEntity findCountryByName(String name){
         Optional<CountryEntity> countryEntity = countryRepository.findCountryEntityByName(name);
 
         if(countryEntity.isEmpty()){
@@ -56,7 +56,7 @@ public class CountryService {
 
     }
 
-    private CountryEntity findCountryById(Long id){
+    public CountryEntity findCountryById(Long id){
         Optional<CountryEntity> countryEntity = countryRepository.findById(id);
 
         if(countryEntity.isEmpty()){

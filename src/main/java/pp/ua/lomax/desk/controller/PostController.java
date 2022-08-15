@@ -66,12 +66,15 @@ public class PostController {
         return null;
     }
 
+    //TODO getPostListByCountry with pagination
+    //TODO getPostListByRegion with pagination
+
     @GetMapping("/{categoryId}/{page}/{size}")
     public PostPaginationDto getPostsList(@PathVariable Long categoryId,
                                           @PathVariable Integer page,
                                           @PathVariable Integer size){
 
-        return postService.getPostsPagination(categoryId, page, size);
+        return postService.getPostsPaginationByCategory(categoryId, page, size);
     }
 
     @GetMapping("/{postId}")

@@ -9,7 +9,8 @@ public enum EResponseMessage {
     REGISTER_SUCCESSFULLY("User registered successfully!"),
     CATEGORY_DELETED("Category deleted"),
     CATEGORY_IS_EMPTY("Category is empty"),
-    COUNTRY_DELETED("Country deleted");
+    COUNTRY_DELETED("Country deleted"),
+    REGION_DELETED("Region deleted");
 
     private String message;
 

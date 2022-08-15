@@ -109,7 +109,7 @@ public class CategoryService {
     public MessageResponseDto deleteCategory(CategoryDeleteDto categoryDeleteDto,
                                              UserDetailsImpl userDetailsImpl) {
 
-        List<Optional<CategoryEntity>> parentCategoryEntity =
+        List<CategoryEntity> parentCategoryEntity =
                 categoryRepository.findCategoryEntityByParent(categoryDeleteDto.getId());
 
         if (!parentCategoryEntity.isEmpty()) {
@@ -121,7 +121,7 @@ public class CategoryService {
                         .orElseThrow(() ->
                                 new MessageRuntimeException(EExceptionMessage.CATEGORY_NO_SUCH.getMessage()));
 
-        List<Optional<PostEntity>> postEntityList = postRepository.findByCategory(categoryEntity);
+        List<PostEntity> postEntityList = postRepository.findByCategory(categoryEntity);
 
         if(!postEntityList.isEmpty()){
             throw new MessageRuntimeException(EExceptionMessage.CATEGORY_IS_NOT_EMPTY.getMessage());

@@ -15,4 +15,6 @@ public interface RegionRepository extends JpaRepository<RegionEntity, Long> {
 
     List<RegionEntity> findRegionEntityByCountry(CountryEntity countryEntity);
 
+    Optional<RegionEntity> findRegionEntityByNameAndCountry(String name, CountryEntity countryEntity);
+
 }

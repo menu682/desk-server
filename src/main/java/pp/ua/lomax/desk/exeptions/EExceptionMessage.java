@@ -14,6 +14,8 @@ public enum EExceptionMessage {
     COUNTRY_CONTAINS_REGIONS("Error: You cannot delete this country, country contains regions"),
     REGION_NOT_FOUND("Region not found"),
     REGION_CAN_NOT_BE_NULL("Error: Region id can not be null"),
+    REGION_IS_EXISTS("Error: region in this country already exists"),
+    REGION_CONTAINS_POSTS("Error: You cannot delete this region, region contains posts"),
     UNAUTHORIZED("Error: Unauthorized"),
     USER_NOT_FOUND("User Not Found with username: "),
     FIELDS_MUST_NOT_BE_EMPTY("Fields must not be empty"),

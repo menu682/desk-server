@@ -114,37 +114,76 @@ public class PostService {
                         new MessageRuntimeException(EExceptionMessage.REGION_NOT_FOUND.getMessage()));
     }
 
-    //TODO getPostsPaginationByCountry
-    //TODO getPostsPaginationByRegion
-
-    public PostPaginationDto getPostsPaginationByCategory(Long categoryId,
-                                                          Integer pageNumber,
-                                                          Integer size) {
-
-        CategoryEntity categoryEntity = getCategoryEntityById(categoryId);
-//TODO add any sorted methods
-        Pageable paging = PageRequest.of(pageNumber - 1, size, Sort.by("created").descending());
-
-        Page<PostEntity> pageResult = postRepository.findByStatusAndCategory(EPostStatus.ACTIVE,
-                                                                                categoryEntity, paging);
-
-        if (pageResult.getContent().isEmpty()) {
-            throw new MessageRuntimeException(EResponseMessage.CATEGORY_IS_EMPTY.getMessage());
-        }
-
+    private PostPaginationDto convertPageToPostPaginationDto(Page<PostEntity> page, Integer pageNumber){
         Set<PostResponseDto> postResponseDtoSet = new HashSet<>();
-        pageResult.getContent().forEach(postEntity -> {
+        page.getContent().forEach(postEntity -> {
             PostResponseDto postResponseDto = convertPostEntityToDto(postEntity);
             postResponseDtoSet.add(postResponseDto);
         });
 
         PostPaginationDto postPaginationDto = new PostPaginationDto();
-        postPaginationDto.setTotalElements(pageResult.getTotalElements());
-        postPaginationDto.setTotalPages(pageResult.getTotalPages());
+        postPaginationDto.setTotalElements(page.getTotalElements());
+        postPaginationDto.setTotalPages(page.getTotalPages());
         postPaginationDto.setCurrentPage(pageNumber);
         postPaginationDto.setPostResponseDtoSet(postResponseDtoSet);
 
         return postPaginationDto;
+    }
+
+    public PostPaginationDto getPostsPaginationByCategory(Long categoryId,
+                                                                   Integer pageNumber, Integer size) {
+
+        CategoryEntity categoryEntity = getCategoryEntityById(categoryId);
+//TODO add any sorted methods
+        Pageable paging = PageRequest.of(pageNumber - 1, size, Sort.by("created").descending());
+
+        Page<PostEntity> pageResult =
+                postRepository.findByStatusAndCategory(EPostStatus.ACTIVE,
+                        categoryEntity, paging);
+
+        if (pageResult.getContent().isEmpty()) {
+            throw new MessageRuntimeException(EResponseMessage.CATEGORY_IS_EMPTY.getMessage());
+        }
+
+        return convertPageToPostPaginationDto(pageResult, pageNumber);
+    }
+
+    public PostPaginationDto getPostsPaginationByRegion(Long regionId,
+                                                                   Integer pageNumber, Integer size) {
+
+        RegionEntity regionEntity = regionRepository.getById(regionId);
+
+//TODO add any sorted methods
+        Pageable paging = PageRequest.of(pageNumber - 1, size, Sort.by("created").descending());
+
+        Page<PostEntity> pageResult =
+                postRepository.findByStatusAndRegion(EPostStatus.ACTIVE, regionEntity,
+                         paging);
+
+        if (pageResult.getContent().isEmpty()) {
+            throw new MessageRuntimeException(EResponseMessage.REGION_IS_EMPTY.getMessage());
+        }
+
+        return convertPageToPostPaginationDto(pageResult, pageNumber);
+    }
+
+    public PostPaginationDto getPostsPaginationByRegionAndCategory(Long regionId, Long categoryId,
+                                                          Integer pageNumber, Integer size) {
+
+        RegionEntity regionEntity = regionRepository.getById(regionId);
+        CategoryEntity categoryEntity = getCategoryEntityById(categoryId);
+//TODO add any sorted methods
+        Pageable paging = PageRequest.of(pageNumber - 1, size, Sort.by("created").descending());
+
+        Page<PostEntity> pageResult =
+                postRepository.findByStatusAndRegionAndCategory(EPostStatus.ACTIVE, regionEntity,
+                                                                categoryEntity, paging);
+
+        if (pageResult.getContent().isEmpty()) {
+            throw new MessageRuntimeException(EResponseMessage.CATEGORY_IS_EMPTY.getMessage());
+        }
+
+        return convertPageToPostPaginationDto(pageResult, pageNumber);
     }
 
     public PostResponseDto createPost(PostCreateDto postCreateDto,

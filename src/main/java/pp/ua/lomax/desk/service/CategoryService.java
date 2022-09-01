@@ -82,7 +82,7 @@ public class CategoryService {
 
         CategoryEntity savedCategoryEntity = categoryRepository.save(categoryEntity);
 
-        log.info("Add category: " + categoryEntity.getName() + "; user: " + userDetailsImpl.getUsername());
+        log.info("Add category: " + savedCategoryEntity.getName() + "; user: " + userDetailsImpl.getUsername());
 
         return convertCategoryEntityToDto(savedCategoryEntity);
     }

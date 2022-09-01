@@ -43,21 +43,21 @@ public class CategoryController {
     }
 
     @Secured("ROLE_ADMIN")
-    @PostMapping("/")
+    @PostMapping
     public CategoryResponseDto addCategory(@RequestBody CategoryAddDto categoryAddDto,
                                            @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
         return categoryService.addCategory(categoryAddDto, userDetailsImpl);
     }
 
     @Secured("ROLE_ADMIN")
-    @PutMapping("/")
+    @PutMapping
     public CategoryResponseDto putCategory(@RequestBody CategoryPutDto categoryPutDto,
                                             @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
         return categoryService.putCategory(categoryPutDto, userDetailsImpl);
     }
 
     @Secured("ROLE_ADMIN")
-    @DeleteMapping("/")
+    @DeleteMapping
     public MessageResponseDto deleteCategory(@RequestBody CategoryDeleteDto categoryDeleteDto,
                                              @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
         return categoryService.deleteCategory(categoryDeleteDto, userDetailsImpl);

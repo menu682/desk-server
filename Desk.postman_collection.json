@@ -58,7 +58,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJEZXNrU2VydmVyIiwiaWF0IjoxNjUzNTUwOTY1LCJleHAiOjE2NTM2MzczNjUsInVzZXJpZCI6MiwidXNlcm5hbWUiOiJhZG1pbiJ9.htsJqC4pAJztCNocm6uP7TobRZLqJv0paswxvU348UbKLyb8Auon8JHK3c3ji8vTq9YjS0UdAvIAWF7MsL4HIw",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJEZXNrU2VydmVyIiwiaWF0IjoxNjYyMDI1NzY0LCJleHAiOjE2NjIxMTIxNjQsInVzZXJpZCI6MiwidXNlcm5hbWUiOiJhZG1pbiJ9.Jt5xhAIsBiKE-nj0-5rOB5agDN9x63F2e3rBB-CUVLkRFID39PeRnSBEU7g6Ty8e0gpu-b7iDdQCqhW-5ppA1Q",
 									"type": "string"
 								}
 							]
@@ -67,7 +67,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\":\"category 13\",\r\n    \"parent\": 1\r\n}",
+							"raw": "{\r\n    \"name\":\"category 17\",\r\n    \"parent\": 1\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -182,7 +182,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"username\":\"admin1\",\r\n    \"email\": \"admin1@aaa.aa\",\r\n    \"phone\": \"0957380000\",\r\n    \"password\":\"0000\"\r\n}",
+							"raw": "{\r\n    \"username\":\"testuser1\",\r\n    \"email\": \"testuser1@aaa.aa\",\r\n    \"phone\": \"0957381112\",\r\n    \"password\":\"0000\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -433,7 +433,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJEZXNrU2VydmVyIiwiaWF0IjoxNjU0ODE2NDU4LCJleHAiOjE2NTQ5MDI4NTgsInVzZXJpZCI6MiwidXNlcm5hbWUiOiJhZG1pbiJ9.vP710by0ECBb3qgq9ctTw6Ln3jKyHmAYhmvHQkluwnCNQw9b0d_VtLw6ZaFsRWUS4u84hTmmWaWosVOxHLKUCQ",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJEZXNrU2VydmVyIiwiaWF0IjoxNjYyMDMyMzE1LCJleHAiOjE2NjIxMTg3MTUsInVzZXJpZCI6MiwidXNlcm5hbWUiOiJhZG1pbiJ9.bXgarJCgoCw2TCS3eEmXZF0mM1tnw9d2XVrZbhKim-y_KIklv6G-EZZ063r_FkG_T58kD5klmzZtvlup5H03zQ",
 									"type": "string"
 								}
 							]
@@ -442,7 +442,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"category\": 1,\r\n    \"name\": \"Test post 30\",\r\n    \"description\": \"test description\",\r\n    \"ad\": \"test text ad\",\r\n    \"price\": 1000\r\n}",
+							"raw": "{\r\n    \"category\": 1,\r\n    \"name\": \"Test post 35\",\r\n    \"description\": \"test description\",\r\n    \"ad\": \"test text ad\",\r\n    \"price\": 1000,\r\n    \"region\": 12\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -465,12 +465,12 @@
 					"response": []
 				},
 				{
-					"name": "Get post pagination",
+					"name": "Get post region pagination",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8080/api/post/1/2/5",
+							"raw": "http://localhost:8080/api/post/region/12/1/5",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -479,8 +479,57 @@
 							"path": [
 								"api",
 								"post",
+								"region",
+								"12",
 								"1",
-								"2",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get post category pagination",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/post/category/1/1/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"post",
+								"category",
+								"1",
+								"1",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get post region and category pagination",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/post/12/1/1/5",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"post",
+								"12",
+								"1",
+								"1",
 								"5"
 							]
 						}
@@ -500,7 +549,7 @@
 							"bearer": [
 								{
 									"key": "token",
-									"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJEZXNrU2VydmVyIiwiaWF0IjoxNjU4MjExMDA0LCJleHAiOjE2NTgyOTc0MDQsInVzZXJpZCI6MiwidXNlcm5hbWUiOiJhZG1pbiJ9.dBGaZZn1lxr-kdv7wb1zAHfVNsrFtrv8nLVGibZAHge43xoGltYvBA2QoXEQx5VDU4XqGwNGkQkk5GeS2lDqXw",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJEZXNrU2VydmVyIiwiaWF0IjoxNjU4MjEzNjcxLCJleHAiOjE2NTgzMDAwNzEsInVzZXJpZCI6NywidXNlcm5hbWUiOiJ0ZXN0dXNlcjEifQ.Fx-0cxCcbY0LpArlXz5IM9AbgKNqgx1tQ4U3dPxhrTm5WGcWTu1SJ6oiX0Rg0-AO0sObcb6TUstjLhL9W1nDkw",
 									"type": "string"
 								}
 							]
@@ -509,7 +558,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"balance\": 10 \r\n}",
+							"raw": "{\r\n    \"balance\": 123\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -527,6 +576,213 @@
 								"api",
 								"vip",
 								"addbalance"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Region",
+			"item": [
+				{
+					"name": "Get all regions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/regions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"regions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete region",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJEZXNrU2VydmVyIiwiaWF0IjoxNjYyMDI1NzY0LCJleHAiOjE2NjIxMTIxNjQsInVzZXJpZCI6MiwidXNlcm5hbWUiOiJhZG1pbiJ9.Jt5xhAIsBiKE-nj0-5rOB5agDN9x63F2e3rBB-CUVLkRFID39PeRnSBEU7g6Ty8e0gpu-b7iDdQCqhW-5ppA1Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/regions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"regions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put region",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJEZXNrU2VydmVyIiwiaWF0IjoxNjYyMDI1NzY0LCJleHAiOjE2NjIxMTIxNjQsInVzZXJpZCI6MiwidXNlcm5hbWUiOiJhZG1pbiJ9.Jt5xhAIsBiKE-nj0-5rOB5agDN9x63F2e3rBB-CUVLkRFID39PeRnSBEU7g6Ty8e0gpu-b7iDdQCqhW-5ppA1Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": 11,\r\n    \"name\":\"Kyiv\",\r\n    \"parent\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/regions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"regions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Add region",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzUxMiJ9.eyJpc3MiOiJEZXNrU2VydmVyIiwiaWF0IjoxNjYyMDI1NzY0LCJleHAiOjE2NjIxMTIxNjQsInVzZXJpZCI6MiwidXNlcm5hbWUiOiJhZG1pbiJ9.Jt5xhAIsBiKE-nj0-5rOB5agDN9x63F2e3rBB-CUVLkRFID39PeRnSBEU7g6Ty8e0gpu-b7iDdQCqhW-5ppA1Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\":\"Ukraine\",\r\n    \"parent\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/regions",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"regions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get region by id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/regions/region/10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"regions",
+								"region",
+								"10"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all countries",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/regions/countries",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"regions",
+								"countries"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get all regions by parent",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/api/regions/parent/10",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"regions",
+								"parent",
+								"10"
 							]
 						}
 					},

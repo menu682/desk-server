@@ -21,9 +21,16 @@ public interface PostRepository extends JpaRepository<PostEntity, Long> {
     List<PostEntity> findAllByRegion(RegionEntity regionEntity);
 
     //@Query(value = "from PostEntity as post where post.category = ?2")
-    Page<PostEntity> findByStatusAndCategory(EPostStatus status,
+    Page<PostEntity> findByStatusAndRegionAndCategory(EPostStatus status,
+                             RegionEntity regionEntity,
                              CategoryEntity categoryEntity,
                              Pageable pageable);
 
+    Page<PostEntity> findByStatusAndRegion(EPostStatus status,
+                                                      RegionEntity regionEntity,
+                                                      Pageable pageable);
 
+    Page<PostEntity> findByStatusAndCategory(EPostStatus status,
+                                                      CategoryEntity categoryEntity,
+                                                      Pageable pageable);
 }

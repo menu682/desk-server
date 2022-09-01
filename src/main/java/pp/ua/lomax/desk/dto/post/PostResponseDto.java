@@ -1,6 +1,9 @@
 package pp.ua.lomax.desk.dto.post;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pp.ua.lomax.desk.persistance.entity.CategoryEntity;
 import pp.ua.lomax.desk.persistance.entity.PhotoEntity;
 import pp.ua.lomax.desk.persistance.entity.RegionEntity;
@@ -10,7 +13,10 @@ import pp.ua.lomax.desk.persistance.repository.EPostStatus;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PostResponseDto {
 
     private Long id;

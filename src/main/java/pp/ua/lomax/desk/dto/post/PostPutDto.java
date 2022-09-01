@@ -1,9 +1,15 @@
 package pp.ua.lomax.desk.dto.post;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pp.ua.lomax.desk.persistance.repository.EPostStatus;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PostPutDto {
 
     private Long id;

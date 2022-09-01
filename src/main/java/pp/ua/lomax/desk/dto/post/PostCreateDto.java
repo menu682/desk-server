@@ -1,12 +1,18 @@
 package pp.ua.lomax.desk.dto.post;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import pp.ua.lomax.desk.persistance.entity.PhotoEntity;
 
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class PostCreateDto {
 
     private Long category;

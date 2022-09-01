@@ -22,7 +22,7 @@ public class RegionEntity extends BaseEntity{
     @Column(name = "name", nullable = false)
     private String name;
 
-    @ManyToOne
-    private CountryEntity country;
+    @Column(name = "parent", nullable = false)
+    private Long parent;
 
 }

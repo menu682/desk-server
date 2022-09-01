@@ -66,15 +66,29 @@ public class PostController {
         return null;
     }
 
-    //TODO getPostListByCountry with pagination
-    //TODO getPostListByRegion with pagination
+    @GetMapping("/region/{regionId}/{page}/{size}")
+    public PostPaginationDto getPostsListByRegion(@PathVariable Long regionId,
+                                          @PathVariable Integer page,
+                                          @PathVariable Integer size){
 
-    @GetMapping("/{categoryId}/{page}/{size}")
-    public PostPaginationDto getPostsList(@PathVariable Long categoryId,
+        return postService.getPostsPaginationByRegion(regionId, page, size);
+    }
+
+    @GetMapping("/category/{categoryId}/{page}/{size}")
+    public PostPaginationDto getPostsListByCategory(@PathVariable Long categoryId,
                                           @PathVariable Integer page,
                                           @PathVariable Integer size){
 
         return postService.getPostsPaginationByCategory(categoryId, page, size);
+    }
+
+    @GetMapping("/{regionId}/{categoryId}/{page}/{size}")
+    public PostPaginationDto getPostsList(@PathVariable Long regionId,
+                                          @PathVariable Long categoryId,
+                                          @PathVariable Integer page,
+                                          @PathVariable Integer size){
+
+        return postService.getPostsPaginationByRegionAndCategory(regionId, categoryId, page, size);
     }
 
     @GetMapping("/{postId}")

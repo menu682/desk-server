@@ -1,11 +1,17 @@
 package pp.ua.lomax.desk.dto.region;
 
-import lombok.Data;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class RegionPutDto {
 
     private Long id;
     private String name;
-    private Long country;
+    private Long parent;
 }

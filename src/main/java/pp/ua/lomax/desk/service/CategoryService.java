@@ -78,7 +78,7 @@ public class CategoryService {
         CategoryEntity categoryEntity = new CategoryEntity();
         categoryEntity.setName(categoryAddDto.getName());
         categoryEntity.setParent(categoryAddDto.getParent());
-        categoryEntity.setUser(userDetailsImpl.getUser());
+ //       categoryEntity.setUser(userDetailsImpl.getUser());
 
         CategoryEntity savedCategoryEntity = categoryRepository.save(categoryEntity);
 
@@ -97,7 +97,7 @@ public class CategoryService {
 
         categoryEntity.setName(categoryPutDto.getName());
         categoryEntity.setParent(categoryEntity.getParent());
-        categoryEntity.setUser(userDetailsImpl.getUser());
+ //       categoryEntity.setUser(userDetailsImpl.getUser());
 
         CategoryEntity savedCategoryEntity = categoryRepository.save(categoryEntity);
 

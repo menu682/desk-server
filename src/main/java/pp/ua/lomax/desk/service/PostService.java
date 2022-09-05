@@ -109,7 +109,7 @@ public class PostService {
         if(id == null){
             throw new MessageRuntimeException(EExceptionMessage.REGION_CAN_NOT_BE_NULL.getMessage());
         }
-        return regionRepository.findRegionById(id)
+        return regionRepository.findRegionEntityById(id)
                 .orElseThrow(() ->
                         new MessageRuntimeException(EExceptionMessage.REGION_NOT_FOUND.getMessage()));
     }
@@ -134,7 +134,7 @@ public class PostService {
                                                                    Integer pageNumber, Integer size) {
 
         CategoryEntity categoryEntity = getCategoryEntityById(categoryId);
-//TODO add any sorted methods
+
         Pageable paging = PageRequest.of(pageNumber - 1, size, Sort.by("created").descending());
 
         Page<PostEntity> pageResult =
@@ -151,9 +151,8 @@ public class PostService {
     public PostPaginationDto getPostsPaginationByRegion(Long regionId,
                                                                    Integer pageNumber, Integer size) {
 
-        RegionEntity regionEntity = regionRepository.getById(regionId);
+        RegionEntity regionEntity = getRegionEntityById(regionId);
 
-//TODO add any sorted methods
         Pageable paging = PageRequest.of(pageNumber - 1, size, Sort.by("created").descending());
 
         Page<PostEntity> pageResult =
@@ -170,9 +169,9 @@ public class PostService {
     public PostPaginationDto getPostsPaginationByRegionAndCategory(Long regionId, Long categoryId,
                                                           Integer pageNumber, Integer size) {
 
-        RegionEntity regionEntity = regionRepository.getById(regionId);
+        RegionEntity regionEntity =  getRegionEntityById(regionId);
         CategoryEntity categoryEntity = getCategoryEntityById(categoryId);
-//TODO add any sorted methods
+
         Pageable paging = PageRequest.of(pageNumber - 1, size, Sort.by("created").descending());
 
         Page<PostEntity> pageResult =

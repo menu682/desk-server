@@ -10,7 +10,7 @@ import java.util.Optional;
 @Repository
 public interface RegionRepository extends JpaRepository<RegionEntity, Long> {
 
-    Optional<RegionEntity> findRegionById(Long aLong);
+    Optional<RegionEntity> findRegionEntityById(Long aLong);
 
     Optional<RegionEntity> findRegionEntityByNameAndParent(String name, Long parent);
 

@@ -52,7 +52,7 @@ public class RegionService {
 
     public RegionResponseDto getRegionById(Long id){
 
-        RegionEntity regionEntity = regionRepository.findRegionById(id)
+        RegionEntity regionEntity = regionRepository.findRegionEntityById(id)
                 .orElseThrow(() ->
                     new MessageRuntimeException(EExceptionMessage.REGION_NOT_FOUND.getMessage())
                 );

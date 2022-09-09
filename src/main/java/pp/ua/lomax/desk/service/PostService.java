@@ -7,6 +7,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import pp.ua.lomax.desk.config.security.UserDetailsImpl;
 import pp.ua.lomax.desk.dto.EResponseMessage;
@@ -38,6 +40,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashSet;
@@ -251,7 +254,7 @@ public class PostService {
 
     public MessageResponseDto deletePost(PostDeleteDto postDeleteDto, UserDetailsImpl userDetailsImpl){
 
-        PostEntity postEntity = getPostEntityById(postDeleteDto.getPostId());
+        PostEntity postEntity = getPostEntityById(postDeleteDto.getId());
 
         if (userDetailsImpl.getId() != postEntity.getUser().getId()){
             throw new MessageRuntimeException(EExceptionMessage.POST_DELETE_ACCESS_IS_DENIED.getMessage());

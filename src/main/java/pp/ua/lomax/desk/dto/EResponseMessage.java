@@ -10,7 +10,8 @@ public enum EResponseMessage {
     CATEGORY_DELETED("Category deleted"),
     CATEGORY_IS_EMPTY("Category is empty"),
     REGION_IS_EMPTY("Region is empty"),
-    REGION_DELETED("Region deleted");
+    REGION_DELETED("Region deleted"),
+    POST_DELETED("Post deleted");
 
     private String message;
 

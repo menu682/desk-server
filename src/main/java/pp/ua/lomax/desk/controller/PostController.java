@@ -63,7 +63,8 @@ public class PostController {
     @DeleteMapping
     public MessageResponseDto deletePost(@RequestBody PostDeleteDto postDeleteDto,
                                          @AuthenticationPrincipal UserDetailsImpl userDetailsImpl){
-        return null;
+
+        return postService.deletePost(postDeleteDto, userDetailsImpl);
     }
 
     @GetMapping("/region/{regionId}")

@@ -10,8 +10,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import pp.ua.lomax.desk.config.security.UserDetailsImpl;
 import pp.ua.lomax.desk.dto.EResponseMessage;
+import pp.ua.lomax.desk.dto.MessageResponseDto;
 import pp.ua.lomax.desk.dto.post.PhotoDto;
 import pp.ua.lomax.desk.dto.post.PostCreateDto;
+import pp.ua.lomax.desk.dto.post.PostDeleteDto;
 import pp.ua.lomax.desk.dto.post.PostPaginationDto;
 import pp.ua.lomax.desk.dto.post.PostPutDto;
 import pp.ua.lomax.desk.dto.post.PostResponseDto;
@@ -245,6 +247,21 @@ public class PostService {
                 + " user: " + userDetailsImpl.getUser().getUsername());
 
         return convertPostEntityToDto(postEntity);
+    }
+
+    public MessageResponseDto deletePost(PostDeleteDto postDeleteDto, UserDetailsImpl userDetailsImpl){
+
+        PostEntity postEntity = getPostEntityById(postDeleteDto.getPostId());
+
+        if (userDetailsImpl.getId() != postEntity.getUser().getId()){
+            throw new MessageRuntimeException(EExceptionMessage.POST_DELETE_ACCESS_IS_DENIED.getMessage());
+        }
+
+        postRepository.delete(postEntity);
+        log.info("Post delete: ID: " + postEntity.getId() + "postName: " + postEntity.getName()
+                + " user: " + userDetailsImpl.getUser().getUsername());
+
+        return new MessageResponseDto(EResponseMessage.POST_DELETED.getMessage());
     }
 
     public PostResponseDto uploadPhoto(PostPutDto postPutDto,

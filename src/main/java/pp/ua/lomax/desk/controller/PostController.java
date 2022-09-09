@@ -66,27 +66,27 @@ public class PostController {
         return null;
     }
 
-    @GetMapping("/region/{regionId}/{page}/{size}")
+    @GetMapping("/region/{regionId}")
     public PostPaginationDto getPostsListByRegion(@PathVariable Long regionId,
-                                          @PathVariable Integer page,
-                                          @PathVariable Integer size){
+                                          @RequestParam Integer page,
+                                          @RequestParam Integer size){
 
         return postService.getPostsPaginationByRegion(regionId, page, size);
     }
 
-    @GetMapping("/category/{categoryId}/{page}/{size}")
+    @GetMapping("/category/{categoryId}")
     public PostPaginationDto getPostsListByCategory(@PathVariable Long categoryId,
-                                          @PathVariable Integer page,
-                                          @PathVariable Integer size){
+                                          @RequestParam Integer page,
+                                          @RequestParam Integer size){
 
         return postService.getPostsPaginationByCategory(categoryId, page, size);
     }
 
-    @GetMapping("/{regionId}/{categoryId}/{page}/{size}")
+    @GetMapping("/{regionId}/{categoryId}")
     public PostPaginationDto getPostsList(@PathVariable Long regionId,
                                           @PathVariable Long categoryId,
-                                          @PathVariable Integer page,
-                                          @PathVariable Integer size){
+                                          @RequestParam Integer page,
+                                          @RequestParam Integer size){
 
         return postService.getPostsPaginationByRegionAndCategory(regionId, categoryId, page, size);
     }

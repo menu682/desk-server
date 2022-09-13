@@ -3,8 +3,8 @@ package pp.ua.lomax.desk.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import pp.ua.lomax.desk.dto.config.ConfigDto;
+import pp.ua.lomax.desk.exeptions.ConflictException;
 import pp.ua.lomax.desk.exeptions.EExceptionMessage;
-import pp.ua.lomax.desk.exeptions.MessageRuntimeException;
 import pp.ua.lomax.desk.persistance.entity.ConfigEntity;
 import pp.ua.lomax.desk.persistance.repository.ConfigRepository;
 import pp.ua.lomax.desk.persistance.repository.EConfigStatus;
@@ -46,7 +46,7 @@ public class ConfigService {
         ConfigEntity oldConfigEntity = getConfig();
 
         if(oldConfigEntity.getVipDayCost().equals(configDto.getVipDayCost())){
-            throw new MessageRuntimeException(EExceptionMessage.CONFIG_NOT_CHANGE.getMessage());
+            throw new ConflictException(EExceptionMessage.CONFIG_NOT_CHANGE.getMessage());
         }
 
         oldConfigEntity.setConfigStatus(EConfigStatus.CLOSE);

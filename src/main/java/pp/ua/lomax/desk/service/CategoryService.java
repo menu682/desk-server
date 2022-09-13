@@ -10,8 +10,9 @@ import pp.ua.lomax.desk.dto.category.CategoryAddDto;
 import pp.ua.lomax.desk.dto.category.CategoryDeleteDto;
 import pp.ua.lomax.desk.dto.category.CategoryPutDto;
 import pp.ua.lomax.desk.dto.category.CategoryResponseDto;
+import pp.ua.lomax.desk.exeptions.ConflictException;
+import pp.ua.lomax.desk.exeptions.DataNotFoundException;
 import pp.ua.lomax.desk.exeptions.EExceptionMessage;
-import pp.ua.lomax.desk.exeptions.MessageRuntimeException;
 import pp.ua.lomax.desk.persistance.entity.CategoryEntity;
 import pp.ua.lomax.desk.persistance.entity.PostEntity;
 import pp.ua.lomax.desk.persistance.repository.CategoryRepository;
@@ -59,7 +60,7 @@ public class CategoryService {
 
         CategoryEntity categoryEntity = categoryRepository.findCategoryEntityById(categoryId)
                 .orElseThrow(() ->
-                        new MessageRuntimeException(EExceptionMessage.CATEGORY_NO_SUCH.getMessage()));
+                        new DataNotFoundException(EExceptionMessage.CATEGORY_NO_SUCH.getMessage()));
 
         return convertCategoryEntityToDto(categoryEntity);
     }
@@ -72,7 +73,7 @@ public class CategoryService {
                         categoryAddDto.getName(), categoryAddDto.getParent());
 
         if (findCategoryEntity.isPresent()) {
-            throw new MessageRuntimeException(EExceptionMessage.CATEGORY_ALREADY_EXISTS.getMessage());
+            throw new ConflictException(EExceptionMessage.CATEGORY_ALREADY_EXISTS.getMessage());
         }
 
         CategoryEntity categoryEntity = new CategoryEntity();
@@ -93,7 +94,7 @@ public class CategoryService {
         CategoryEntity categoryEntity =
                 categoryRepository.findCategoryEntityById(categoryPutDto.getId())
                         .orElseThrow(() ->
-                                new MessageRuntimeException(EExceptionMessage.CATEGORY_NO_SUCH.getMessage()));
+                                new DataNotFoundException(EExceptionMessage.CATEGORY_NO_SUCH.getMessage()));
 
         categoryEntity.setName(categoryPutDto.getName());
         categoryEntity.setParent(categoryEntity.getParent());
@@ -113,18 +114,18 @@ public class CategoryService {
                 categoryRepository.findCategoryEntityByParent(categoryDeleteDto.getId());
 
         if (!parentCategoryEntity.isEmpty()) {
-            throw new MessageRuntimeException(EExceptionMessage.CATEGORY_IS_PARENT.getMessage());
+            throw new ConflictException(EExceptionMessage.CATEGORY_IS_PARENT.getMessage());
         }
 
         CategoryEntity categoryEntity =
                 categoryRepository.findCategoryEntityById(categoryDeleteDto.getId())
                         .orElseThrow(() ->
-                                new MessageRuntimeException(EExceptionMessage.CATEGORY_NO_SUCH.getMessage()));
+                                new DataNotFoundException(EExceptionMessage.CATEGORY_NO_SUCH.getMessage()));
 
         List<PostEntity> postEntityList = postRepository.findByCategory(categoryEntity);
 
         if(!postEntityList.isEmpty()){
-            throw new MessageRuntimeException(EExceptionMessage.CATEGORY_IS_NOT_EMPTY.getMessage());
+            throw new ConflictException(EExceptionMessage.CATEGORY_IS_NOT_EMPTY.getMessage());
         }
 
         categoryRepository.delete(categoryEntity);

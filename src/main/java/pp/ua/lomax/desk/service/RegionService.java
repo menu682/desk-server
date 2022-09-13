@@ -9,8 +9,9 @@ import pp.ua.lomax.desk.dto.region.RegionAddDto;
 import pp.ua.lomax.desk.dto.region.RegionDeleteDto;
 import pp.ua.lomax.desk.dto.region.RegionPutDto;
 import pp.ua.lomax.desk.dto.region.RegionResponseDto;
+import pp.ua.lomax.desk.exeptions.ConflictException;
+import pp.ua.lomax.desk.exeptions.DataNotFoundException;
 import pp.ua.lomax.desk.exeptions.EExceptionMessage;
-import pp.ua.lomax.desk.exeptions.MessageRuntimeException;
 import pp.ua.lomax.desk.persistance.entity.PostEntity;
 import pp.ua.lomax.desk.persistance.entity.RegionEntity;
 import pp.ua.lomax.desk.persistance.repository.PostRepository;
@@ -54,7 +55,7 @@ public class RegionService {
 
         RegionEntity regionEntity = regionRepository.findRegionEntityById(id)
                 .orElseThrow(() ->
-                    new MessageRuntimeException(EExceptionMessage.REGION_NOT_FOUND.getMessage())
+                    new DataNotFoundException(EExceptionMessage.REGION_NOT_FOUND.getMessage())
                 );
 
         return convertRegionEntityToDto(regionEntity);
@@ -64,7 +65,7 @@ public class RegionService {
         List<RegionEntity> regionEntityList = regionRepository.findRegionEntityByParent(parent);
 
         if(regionEntityList.isEmpty()){
-            throw new MessageRuntimeException(EExceptionMessage.REGION_NOT_FOUND.getMessage());
+            throw new DataNotFoundException(EExceptionMessage.REGION_NOT_FOUND.getMessage());
         }
 
         return regionEntityList.stream().map(this::convertRegionEntityToDto).toList();
@@ -77,7 +78,7 @@ public class RegionService {
                 regionAddDto.getName(), regionAddDto.getParent());
 
         if(findRegionEntity.isPresent()){
-            throw new MessageRuntimeException(EExceptionMessage.REGION_IS_EXISTS.getMessage());
+            throw new ConflictException(EExceptionMessage.REGION_IS_EXISTS.getMessage());
         }
 
         RegionEntity regionEntity = new RegionEntity();
@@ -96,7 +97,7 @@ public class RegionService {
 
         RegionEntity regionEntity = regionRepository.findById(regionPutDto.getId())
                 .orElseThrow(() ->
-                        new MessageRuntimeException(EExceptionMessage.REGION_NOT_FOUND.getMessage()));
+                        new DataNotFoundException(EExceptionMessage.REGION_NOT_FOUND.getMessage()));
 
         regionEntity.setName(regionPutDto.getName());
         regionEntity.setParent(regionPutDto.getParent());
@@ -114,17 +115,17 @@ public class RegionService {
                 regionRepository.findRegionEntityByParent(regionDeleteDto.getId());
 
         if(!regionEntityList.isEmpty()){
-            throw new MessageRuntimeException(EExceptionMessage.REGION_IS_PARENT.getMessage());
+            throw new ConflictException(EExceptionMessage.REGION_IS_PARENT.getMessage());
         }
 
         RegionEntity regionEntity = regionRepository.findById(regionDeleteDto.getId())
                 .orElseThrow(() ->
-                        new MessageRuntimeException(EExceptionMessage.REGION_NOT_FOUND.getMessage()));
+                        new DataNotFoundException(EExceptionMessage.REGION_NOT_FOUND.getMessage()));
 
         List<PostEntity> postEntityList = postRepository.findAllByRegion(regionEntity);
 
         if(!postEntityList.isEmpty()){
-            throw new MessageRuntimeException(EExceptionMessage.REGION_CONTAINS_POSTS.getMessage());
+            throw new ConflictException(EExceptionMessage.REGION_CONTAINS_POSTS.getMessage());
         }
 
         regionRepository.delete(regionEntity);

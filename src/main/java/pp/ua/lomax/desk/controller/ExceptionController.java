@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import pp.ua.lomax.desk.dto.MessageResponseDto;
+import pp.ua.lomax.desk.exeptions.BadDataRequestException;
+import pp.ua.lomax.desk.exeptions.ConflictException;
+import pp.ua.lomax.desk.exeptions.DataNotFoundException;
+import pp.ua.lomax.desk.exeptions.ForbiddenException;
 
 /*
 Класс отключает генерацию html по умолчанию при возникновении исключений
@@ -14,7 +18,31 @@ import pp.ua.lomax.desk.dto.MessageResponseDto;
  */
 
 @org.springframework.web.bind.annotation.RestControllerAdvice
-public class ExeptionController extends ResponseEntityExceptionHandler {
+public class ExceptionController extends ResponseEntityExceptionHandler {
+
+    @ExceptionHandler(ForbiddenException.class)
+    public ResponseEntity<Object> forbiddenException(Exception ex, WebRequest webRequest) {
+        return handleExceptionInternal(ex, null, new HttpHeaders(),
+                HttpStatus.FORBIDDEN, webRequest);
+    }
+
+    @ExceptionHandler(ConflictException.class)
+    public ResponseEntity<Object> conflictException(Exception ex, WebRequest webRequest) {
+        return handleExceptionInternal(ex, null, new HttpHeaders(),
+                HttpStatus.CONFLICT, webRequest);
+    }
+
+    @ExceptionHandler(DataNotFoundException.class)
+    public ResponseEntity<Object> dataNotFoundException(Exception ex, WebRequest webRequest) {
+        return handleExceptionInternal(ex, null, new HttpHeaders(),
+                HttpStatus.NOT_FOUND, webRequest);
+    }
+
+    @ExceptionHandler(BadDataRequestException.class)
+    public ResponseEntity<Object> badDataRequestException(Exception ex, WebRequest webRequest) {
+        return handleExceptionInternal(ex, null, new HttpHeaders(),
+                HttpStatus.NOT_ACCEPTABLE, webRequest);
+    }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Object> handleOtherException(Exception ex, WebRequest webRequest) {
@@ -31,3 +59,4 @@ public class ExeptionController extends ResponseEntityExceptionHandler {
                 : new MessageResponseDto(ex.getMessage())), headers, status);
     }
 }
+

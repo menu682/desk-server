@@ -7,8 +7,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import pp.ua.lomax.desk.config.security.UserDetailsImpl;
 import pp.ua.lomax.desk.dto.EResponseMessage;
@@ -19,8 +17,10 @@ import pp.ua.lomax.desk.dto.post.PostDeleteDto;
 import pp.ua.lomax.desk.dto.post.PostPaginationDto;
 import pp.ua.lomax.desk.dto.post.PostPutDto;
 import pp.ua.lomax.desk.dto.post.PostResponseDto;
+import pp.ua.lomax.desk.exeptions.BadDataRequestException;
+import pp.ua.lomax.desk.exeptions.DataNotFoundException;
 import pp.ua.lomax.desk.exeptions.EExceptionMessage;
-import pp.ua.lomax.desk.exeptions.MessageRuntimeException;
+import pp.ua.lomax.desk.exeptions.ForbiddenException;
 import pp.ua.lomax.desk.persistance.entity.CategoryEntity;
 import pp.ua.lomax.desk.persistance.entity.PhotoEntity;
 import pp.ua.lomax.desk.persistance.entity.PostEntity;
@@ -40,7 +40,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashSet;
@@ -98,25 +97,25 @@ public class PostService {
     private PostEntity getPostEntityById(Long id) {
         return postRepository.findPostEntitiesById(id)
                 .orElseThrow(() ->
-                        new MessageRuntimeException(EExceptionMessage.POST_NOT_FOUND.getMessage()));
+                        new DataNotFoundException(EExceptionMessage.POST_NOT_FOUND.getMessage()));
     }
 
     private CategoryEntity getCategoryEntityById(Long id) {
         if (id == null){
-            throw new MessageRuntimeException(EExceptionMessage.CATEGORY_CAN_NOT_BE_NULL.getMessage());
+            throw new BadDataRequestException(EExceptionMessage.CATEGORY_CAN_NOT_BE_NULL.getMessage());
         }
         return categoryRepository.findCategoryEntityById(id)
                 .orElseThrow(() ->
-                        new MessageRuntimeException(EExceptionMessage.CATEGORY_NO_SUCH.getMessage()));
+                        new DataNotFoundException(EExceptionMessage.CATEGORY_NO_SUCH.getMessage()));
     }
 
     private RegionEntity getRegionEntityById(Long id){
         if(id == null){
-            throw new MessageRuntimeException(EExceptionMessage.REGION_CAN_NOT_BE_NULL.getMessage());
+            throw new BadDataRequestException(EExceptionMessage.REGION_CAN_NOT_BE_NULL.getMessage());
         }
         return regionRepository.findRegionEntityById(id)
                 .orElseThrow(() ->
-                        new MessageRuntimeException(EExceptionMessage.REGION_NOT_FOUND.getMessage()));
+                        new DataNotFoundException(EExceptionMessage.REGION_NOT_FOUND.getMessage()));
     }
 
     private PostPaginationDto convertPageToPostPaginationDto(Page<PostEntity> page, Integer pageNumber){
@@ -147,7 +146,7 @@ public class PostService {
                         categoryEntity, paging);
 
         if (pageResult.getContent().isEmpty()) {
-            throw new MessageRuntimeException(EResponseMessage.CATEGORY_IS_EMPTY.getMessage());
+            throw new DataNotFoundException(EResponseMessage.CATEGORY_IS_EMPTY.getMessage());
         }
 
         return convertPageToPostPaginationDto(pageResult, pageNumber);
@@ -165,7 +164,7 @@ public class PostService {
                          paging);
 
         if (pageResult.getContent().isEmpty()) {
-            throw new MessageRuntimeException(EResponseMessage.REGION_IS_EMPTY.getMessage());
+            throw new DataNotFoundException(EResponseMessage.REGION_IS_EMPTY.getMessage());
         }
 
         return convertPageToPostPaginationDto(pageResult, pageNumber);
@@ -184,7 +183,7 @@ public class PostService {
                                                                 categoryEntity, paging);
 
         if (pageResult.getContent().isEmpty()) {
-            throw new MessageRuntimeException(EResponseMessage.CATEGORY_IS_EMPTY.getMessage());
+            throw new DataNotFoundException(EResponseMessage.CATEGORY_IS_EMPTY.getMessage());
         }
 
         return convertPageToPostPaginationDto(pageResult, pageNumber);
@@ -220,7 +219,7 @@ public class PostService {
 
         PostEntity postEntity = postRepository.findPostEntitiesById(id)
                 .orElseThrow(() ->
-                        new MessageRuntimeException(EExceptionMessage.POST_NOT_FOUND.getMessage()));
+                        new DataNotFoundException(EExceptionMessage.POST_NOT_FOUND.getMessage()));
 
         return convertPostEntityToDto(postEntity);
 
@@ -231,7 +230,7 @@ public class PostService {
         PostEntity postEntity = getPostEntityById(postPutDto.getId());
 
         if (userDetailsImpl.getId() != postEntity.getUser().getId()) {
-            throw new MessageRuntimeException(EExceptionMessage.POST_PUT_ACCESS_IS_DENIED.getMessage());
+            throw new ForbiddenException(EExceptionMessage.POST_PUT_ACCESS_IS_DENIED.getMessage());
         }
 
         CategoryEntity categoryEntity = getCategoryEntityById(postPutDto.getCategory());
@@ -257,7 +256,7 @@ public class PostService {
         PostEntity postEntity = getPostEntityById(postDeleteDto.getId());
 
         if (userDetailsImpl.getId() != postEntity.getUser().getId()){
-            throw new MessageRuntimeException(EExceptionMessage.POST_DELETE_ACCESS_IS_DENIED.getMessage());
+            throw new ForbiddenException(EExceptionMessage.POST_DELETE_ACCESS_IS_DENIED.getMessage());
         }
 
         postRepository.delete(postEntity);
@@ -274,7 +273,7 @@ public class PostService {
         PostEntity postEntity = getPostEntityById(postPutDto.getId());
 
         if (userDetailsImpl.getId() != postEntity.getUser().getId()) {
-            throw new MessageRuntimeException(EExceptionMessage.POST_PUT_ACCESS_IS_DENIED.getMessage());
+            throw new ForbiddenException(EExceptionMessage.POST_PUT_ACCESS_IS_DENIED.getMessage());
         }
 
         CategoryEntity categoryEntity = getCategoryEntityById(postPutDto.getCategory());
@@ -302,7 +301,7 @@ public class PostService {
             BufferedImage bufferedImage = ImageIO.read(fis);
             return bufferedImage;
         } catch (FileNotFoundException e) {
-            throw new MessageRuntimeException(EExceptionMessage.FILE_NOT_FOUND.getMessage());
+            throw new DataNotFoundException(EExceptionMessage.FILE_NOT_FOUND.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -316,7 +315,7 @@ public class PostService {
         PostEntity postEntity = getPostEntityById(postPutDto.getId());
 
         if (userDetailsImpl.getId() != postEntity.getUser().getId()) {
-            throw new MessageRuntimeException(EExceptionMessage.POST_PUT_ACCESS_IS_DENIED.getMessage());
+            throw new ForbiddenException(EExceptionMessage.POST_PUT_ACCESS_IS_DENIED.getMessage());
         }
 
         PhotoEntity photoEntity = photoRepository.getById(photoDto.getId());
@@ -342,7 +341,7 @@ public class PostService {
         if (fileSufix.equals("jpg")) {
             fileSufix = "jpeg";
         } else if (!fileSufix.equals("png") && !fileSufix.equals("gif") && !fileSufix.equals("bmp")) {
-            throw new MessageRuntimeException(EExceptionMessage.UNSUPORTED_FILE_FORMAT.getMessage());
+            throw new BadDataRequestException(EExceptionMessage.UNSUPORTED_FILE_FORMAT.getMessage());
         }
 
         StringBuilder fileLink = new StringBuilder();
@@ -372,7 +371,7 @@ public class PostService {
         try (FileOutputStream fileOutputStream = new FileOutputStream(photo)) {
             fileOutputStream.write(uploadFile.getBytes());
         } catch (FileNotFoundException e) {
-            throw new MessageRuntimeException(EExceptionMessage.FILE_NOT_FOUND.getMessage());
+            throw new DataNotFoundException(EExceptionMessage.FILE_NOT_FOUND.getMessage());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -386,7 +385,7 @@ public class PostService {
         try {
             photo.delete();
         } catch (RuntimeException e) {
-            new MessageRuntimeException(EExceptionMessage.FILE_NOT_FOUND.getMessage());
+            new DataNotFoundException(EExceptionMessage.FILE_NOT_FOUND.getMessage());
         }
     }
 

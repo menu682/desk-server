@@ -7,15 +7,15 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import pp.ua.lomax.desk.dto.EResponseMessage;
-import pp.ua.lomax.desk.dto.security.JwtResponseDto;
-import pp.ua.lomax.desk.dto.security.LoginRequestDto;
-import pp.ua.lomax.desk.dto.MessageResponseDto;
-import pp.ua.lomax.desk.dto.security.SignupRequestDto;
 import pp.ua.lomax.desk.config.security.UserDetailsImpl;
 import pp.ua.lomax.desk.config.security.jwt.JwtUtils;
+import pp.ua.lomax.desk.dto.EResponseMessage;
+import pp.ua.lomax.desk.dto.MessageResponseDto;
+import pp.ua.lomax.desk.dto.security.JwtResponseDto;
+import pp.ua.lomax.desk.dto.security.LoginRequestDto;
+import pp.ua.lomax.desk.dto.security.SignupRequestDto;
+import pp.ua.lomax.desk.exeptions.BadDataRequestException;
 import pp.ua.lomax.desk.exeptions.EExceptionMessage;
-import pp.ua.lomax.desk.exeptions.MessageRuntimeException;
 import pp.ua.lomax.desk.persistance.ERole;
 import pp.ua.lomax.desk.persistance.EUserStatus;
 import pp.ua.lomax.desk.persistance.entity.security.RoleEntity;
@@ -79,15 +79,15 @@ public class AuthService {
         if (signupRequestDTO.getUsername().isEmpty()
                 || signupRequestDTO.getPassword().isEmpty()
                 || signupRequestDTO.getEmail().isEmpty()) {
-            throw new MessageRuntimeException(EExceptionMessage.FIELDS_MUST_NOT_BE_EMPTY.getMessage());
+            throw new BadDataRequestException(EExceptionMessage.FIELDS_MUST_NOT_BE_EMPTY.getMessage());
         }
 
         if (Boolean.TRUE.equals(userRepository.existsByUsername(signupRequestDTO.getUsername()))) {
-            throw new MessageRuntimeException(EExceptionMessage.NAME_IS_ALREADY_TAKEN.getMessage());
+            throw new BadDataRequestException(EExceptionMessage.NAME_IS_ALREADY_TAKEN.getMessage());
         }
 
         if (Boolean.TRUE.equals(userRepository.existsByEmail(signupRequestDTO.getEmail()))) {
-            throw new MessageRuntimeException(EExceptionMessage.EMAIL_IS_ALREADY_TAKEN.getMessage());
+            throw new BadDataRequestException(EExceptionMessage.EMAIL_IS_ALREADY_TAKEN.getMessage());
         }
 
         UserEntity userEntity = new UserEntity();
@@ -97,7 +97,7 @@ public class AuthService {
         userEntity.setPassword(encoder.encode(signupRequestDTO.getPassword()));
         Set<RoleEntity> roles = new HashSet<>();
         RoleEntity userRole = roleRepository.findByName(ERole.ROLE_USER)
-                .orElseThrow(() -> new MessageRuntimeException(EExceptionMessage.NO_SUCH_ROLE.getMessage()));
+                .orElseThrow(() -> new BadDataRequestException(EExceptionMessage.NO_SUCH_ROLE.getMessage()));
 
         roles.add(userRole);
 

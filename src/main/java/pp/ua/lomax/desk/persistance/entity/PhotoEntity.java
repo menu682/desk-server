@@ -1,6 +1,7 @@
 package pp.ua.lomax.desk.persistance.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -15,6 +16,7 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 public class PhotoEntity extends BaseEntity{
 
     @Column(name = "link", nullable = false)

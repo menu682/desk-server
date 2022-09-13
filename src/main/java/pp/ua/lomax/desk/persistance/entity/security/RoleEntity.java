@@ -1,6 +1,7 @@
 package pp.ua.lomax.desk.persistance.entity.security;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -20,6 +21,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 public class RoleEntity extends BaseEntity {
 
     @Column(name = "name")

@@ -1,6 +1,7 @@
 package pp.ua.lomax.desk.persistance.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,6 +24,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@EqualsAndHashCode(callSuper = true)
 public class PostEntity extends BaseEntity{
 
     @ManyToOne
